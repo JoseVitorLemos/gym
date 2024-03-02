@@ -1,4 +1,4 @@
-# CleanArchitecture-Structure
+# Gym-Structure
 
 1. Presentation has the reference DependencyInversion and Services 
 2. DependencyInversion has the reference Domain, Data, Service and Business
@@ -10,63 +10,63 @@
 </br>
 </br>
 
-![clean architecture](https://github.com/JoseVitorLemos/CleanArchitecture-Structure/assets/50563095/451aed5d-ec8e-4130-8c92-0cb42e1d875d)
-<p>source: Clean Architecture: A Craftsman's Guide to Software Structure and Design</p>
+![clean architecture](https://github.com/JoseVitorLemos/Gym-Structure/assets/50563095/451aed5d-ec8e-4130-8c92-0cb42e1d875d)
+<p>source: Gymitecture: A Craftsman's Guide to Software Structure and Design</p>
 
 </br>
 
 <h1>Utils</h1>
 <h3>Create projects</h3>
 
-1. dotnet new classlib --name Clean.Arch.Presentatiom
-2. dotnet new classlib --name Clean.Arch.Services
-3. dotnet new classlib --name Clean.Arch.Domain
-4. dotnet new classlib --name Clean.Arch.DependencyInversion
-5. dotnet new classlib --name Clean.Arch.Data
-6. dotnet new xunit --name Clean.Arch.Tests
-7. dotnet new classlib --name Clean.Arch.Helpers
-8. dotnet new classlib --name Clean.Arch.Business
-9. dotnet new classlib --name Clean.Arch.Infrastructure
+1. dotnet new classlib --name Gym.Presentatiom
+2. dotnet new classlib --name Gym.Services
+3. dotnet new classlib --name Gym.Domain
+4. dotnet new classlib --name Gym.DependencyInversion
+5. dotnet new classlib --name Gym.Data
+6. dotnet new xunit --name Gym.Tests
+7. dotnet new classlib --name Gym.Helpers
+8. dotnet new classlib --name Gym.Business
+9. dotnet new classlib --name Gym.Infrastructure
 
 <h3>Create global solution</h3>
 
-1. dotnet new sln --name CleanArchitecture 
-2. dotnet sln CleanArchitecture.sln add Clean.Arch.Presentation/Clean.Arch.Presentation.csproj
-3. dotnet sln CleanArchitecture.sln add Clean.Arch.Services/Clean.Arch.Services.csproj
-4. dotnet sln CleanArchitecture.sln add Clean.Arch.Domain/Clean.Arch.Domain.csproj
-5. dotnet sln CleanArchitecture.sln add Clean.Arch.DependencyInversion/Clean.Arch.DependencyInversion.csproj
-6. dotnet sln CleanArchitecture.sln add Clean.Arch.Data/Clean.Arch.Data.csproj
-7. dotnet sln CleanArchitecture.sln add Clean.Arch.Tests/Clean.Arch.Tests.csproj
-8. dotnet sln CleanArchitecture.sln add Clean.Arch.Helpers/Clean.Arch.Helpers.csproj
-8. dotnet sln CleanArchitecture.sln add Clean.Arch.Business/Clean.Arch.Business.csproj
-9. dotnet sln CleanArchitecture.sln add Clean.Arch.Infrastructure/Clean.Arch.Infrastructure.csproj
+1. dotnet new sln --name Gym 
+2. dotnet sln Gym.sln add Gym.Presentation/Gym.Presentation.csproj
+3. dotnet sln Gym.sln add Gym.Services/Gym.Services.csproj
+4. dotnet sln Gym.sln add Gym.Domain/Gym.Domain.csproj
+5. dotnet sln Gym.sln add Gym.DependencyInversion/Gym.DependencyInversion.csproj
+6. dotnet sln Gym.sln add Gym.Data/Gym.Data.csproj
+7. dotnet sln Gym.sln add Gym.Tests/Gym.Tests.csproj
+8. dotnet sln Gym.sln add Gym.Helpers/Gym.Helpers.csproj
+8. dotnet sln Gym.sln add Gym.Business/Gym.Business.csproj
+9. dotnet sln Gym.sln add Gym.Infrastructure/Gym.Infrastructure.csproj
 
 <h3>Structure</h3>
 <h4>Presentation </h4>
-dotnet add Clean.Arch.Presentation/Clean.Arch.Presentation.csproj reference Clean.Arch.DependencyInversion/Clean.Arch.DependencyInversion.csproj
-dotnet add Clean.Arch.Presentation/Clean.Arch.Presentation.csproj reference Clean.Arch.Services/Clean.Arch.Services.csproj
+dotnet add Gym.Presentation/Gym.Presentation.csproj reference Gym.DependencyInversion/Gym.DependencyInversion.csproj
+dotnet add Gym.Presentation/Gym.Presentation.csproj reference Gym.Services/Gym.Services.csproj
 
 <h4>Infra Dependency Inversion</h4>
-dotnet add Clean.Arch.DependencyInversion/Clean.Arch.DependencyInversion.csproj reference Clean.Arch.Domain/Clean.Arch.Domain.csproj
-dotnet add Clean.Arch.DependencyInversion/Clean.Arch.DependencyInversion.csproj reference Clean.Arch.Data/Clean.Arch.Data.csproj
-dotnet add Clean.Arch.DependencyInversion/Clean.Arch.DependencyInversion.csproj reference Clean.Arch.Services/Clean.Arch.Services.csproj
-dotnet add Clean.Arch.DependencyInversion/Clean.Arch.DependencyInversion.csproj reference Clean.Arch.Business/Clean.Arch.Business.csproj
-dotnet add Clean.Arch.DependencyInversion/Clean.Arch.DependencyInversion.csproj reference Clean.Arch.Infrastructure/Clean.Arch.Infrastructure.csproj
+dotnet add Gym.DependencyInversion/Gym.DependencyInversion.csproj reference Gym.Domain/Gym.Domain.csproj
+dotnet add Gym.DependencyInversion/Gym.DependencyInversion.csproj reference Gym.Data/Gym.Data.csproj
+dotnet add Gym.DependencyInversion/Gym.DependencyInversion.csproj reference Gym.Services/Gym.Services.csproj
+dotnet add Gym.DependencyInversion/Gym.DependencyInversion.csproj reference Gym.Business/Gym.Business.csproj
+dotnet add Gym.DependencyInversion/Gym.DependencyInversion.csproj reference Gym.Infrastructure/Gym.Infrastructure.csproj
 
 <h4>Services</h4>
-dotnet add Clean.Arch.Services/Clean.Arch.Services.csproj reference Clean.Arch.Business/Clean.Arch.Business.csproj
-dotnet add Clean.Arch.Services/Clean.Arch.Services.csproj reference Clean.Arch.Domain/Clean.Arch.Domain.csproj
+dotnet add Gym.Services/Gym.Services.csproj reference Gym.Business/Gym.Business.csproj
+dotnet add Gym.Services/Gym.Services.csproj reference Gym.Domain/Gym.Domain.csproj
 
 <h4>Business</h4>
-dotnet add Clean.Arch.Business/Clean.Arch.Business.csproj reference Clean.Arch.Domain/Clean.Arch.Domain.csproj
-dotnet add Clean.Arch.Business/Clean.Arch.Business.csproj reference Clean.Arch.Infrastructure/Clean.Arch.Infrastructure.csproj
+dotnet add Gym.Business/Gym.Business.csproj reference Gym.Domain/Gym.Domain.csproj
+dotnet add Gym.Business/Gym.Business.csproj reference Gym.Infrastructure/Gym.Infrastructure.csproj
 
 <h4>Data</h4>
-dotnet add Clean.Arch.Data/Clean.Arch.Data.csproj reference Clean.Arch.Domain/Clean.Arch.Domain.csproj
+dotnet add Gym.Data/Gym.Data.csproj reference Gym.Domain/Gym.Domain.csproj
 
 <h3>Create migrations, update and remove</h3>
-dotnet ef migrations add MIGRATION_NAME --project Clean.Arch.Data -s Clean.Arch.Presentation -c DataContext --verbose
+dotnet ef migrations add MIGRATION_NAME --project Gym.Data -s Gym.Presentation -c DataContext --verbose
 
-dotnet ef migrations remove --project Clean.Arch.Data -s Clean.Arch.Presentation -c DataContext --verbose
+dotnet ef migrations remove --project Gym.Data -s Gym.Presentation -c DataContext --verbose
 
-dotnet ef database update --project Clean.Arch.Data -s Clean.Arch.Presentation -c DataContext --verbose
+dotnet ef database update --project Gym.Data -s Gym.Presentation -c DataContext --verbose
