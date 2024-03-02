@@ -14,6 +14,7 @@ public sealed class Login : BaseEntity
 
     public ICollection<User> User { get; set; }
 
+    public Login() { }
 
     public Login(string email, string password, Roles? role = Roles.EmailConfirmation,
             bool? emailConfirmation = false)
