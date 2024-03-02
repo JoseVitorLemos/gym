@@ -10,11 +10,6 @@
 </br>
 </br>
 
-![clean architecture](https://github.com/JoseVitorLemos/Gym-Structure/assets/50563095/451aed5d-ec8e-4130-8c92-0cb42e1d875d)
-<p>source: Gymitecture: A Craftsman's Guide to Software Structure and Design</p>
-
-</br>
-
 <h1>Utils</h1>
 <h3>Create projects</h3>
 
