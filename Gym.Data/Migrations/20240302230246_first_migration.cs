@@ -44,6 +44,22 @@ namespace Gym.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Logins",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
+                    Role = table.Column<int>(type: "int", nullable: false),
+                    EmailConfirmation = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Logins", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PROFESSIONALS",
                 columns: table => new
                 {
@@ -68,9 +84,7 @@ namespace Gym.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: false),
-                    Role = table.Column<int>(type: "int", nullable: false),
+                    LoginId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IndividualEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -81,6 +95,12 @@ namespace Gym.Data.Migrations
                         name: "FK_USERS_INDIVIDUAL_ENTITIES_IndividualEntityId",
                         column: x => x.IndividualEntityId,
                         principalTable: "INDIVIDUAL_ENTITIES",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_USERS_Logins_LoginId",
+                        column: x => x.LoginId,
+                        principalTable: "Logins",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -157,9 +177,21 @@ namespace Gym.Data.Migrations
                 column: "WorkoutId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_IMAGE_EXERCISES_ExerciseName",
+                table: "IMAGE_EXERCISES",
+                column: "ExerciseName",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_INDIVIDUAL_ENTITIES_Cpf",
                 table: "INDIVIDUAL_ENTITIES",
                 column: "Cpf",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Logins_Email",
+                table: "Logins",
+                column: "Email",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -168,15 +200,14 @@ namespace Gym.Data.Migrations
                 column: "IndividualEntityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_USERS_Email",
-                table: "USERS",
-                column: "Email",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_USERS_IndividualEntityId",
                 table: "USERS",
                 column: "IndividualEntityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_USERS_LoginId",
+                table: "USERS",
+                column: "LoginId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WORKOUTS_ImageExerciseId",
@@ -205,6 +236,9 @@ namespace Gym.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "WORKOUTS");
+
+            migrationBuilder.DropTable(
+                name: "Logins");
 
             migrationBuilder.DropTable(
                 name: "IMAGE_EXERCISES");

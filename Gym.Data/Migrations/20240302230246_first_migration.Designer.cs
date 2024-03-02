@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gym.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240227013111_rename_login")]
-    partial class rename_login
+    [Migration("20240302230246_first_migration")]
+    partial class first_migration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -282,7 +282,7 @@ namespace Gym.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Gym.Domain.Entities.Login", "Login")
-                        .WithMany()
+                        .WithMany("User")
                         .HasForeignKey("LoginId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -329,6 +329,11 @@ namespace Gym.Data.Migrations
                     b.Navigation("User");
 
                     b.Navigation("Workout");
+                });
+
+            modelBuilder.Entity("Gym.Domain.Entities.Login", b =>
+                {
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Gym.Domain.Entities.Professional", b =>
