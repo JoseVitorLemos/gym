@@ -47,13 +47,13 @@ public class SmtpNetMailAdapter : ISmtpSender
     public async Task<bool> SendEmail(string? emailAdress = null, string? mailBody = null,
             string? title = null)
     {
-        if (string.IsNullOrEmpty(emailAdress))
+        if (string.IsNullOrEmpty(To))
             To = emailAdress ?? string.Empty;
 
-        if (string.IsNullOrEmpty(mailBody))
+        if (string.IsNullOrEmpty(MailBody))
             MailBody = mailBody ?? string.Empty;
 
-        if (string.IsNullOrEmpty(mailBody))
+        if (string.IsNullOrEmpty(Title))
             Title = title ?? string.Empty;
 
         ValidateEmail();

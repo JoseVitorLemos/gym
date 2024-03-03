@@ -4,9 +4,13 @@ using Gym.Business.WorkoutBusiness;
 using Gym.Domain.Entities;
 using Gym.Services.Authentication.TokenService;
 using Gym.Services.DTO;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gym.Services.LoginService;
 
+[ApiController]
+[Authorize(Roles = "Admin,Personal,FitnessClient")]
 public class LoginService : ILoginService
 {
     private readonly ILoginBusiness _loginBusiness;
@@ -23,23 +27,25 @@ public class LoginService : ILoginService
         _userBusiness = userBusiness;
     }
 
+    [AllowAnonymous]
     public async Task<LoginResponseDTO> Login(LoginDTO model)
     {
-        var loginDto = await _loginBusiness.Login(_mapper.Map<Login>(model));
+        var login = await _loginBusiness.Login(_mapper.Map<Login>(model));
         var userDto = _mapper.Map<UserDTO>(await _userBusiness.GetUserByEmail(model.Email));
-
-        return _authorization.ResponseAuth(Convert.ToString(userDto?.IndividualEntityId), loginDto.Email, loginDto.Role);
+        return _authorization.ResponseAuth(Convert.ToString(userDto?.IndividualEntityId), login.Email, login.Role);
     }
 
-    public async Task<bool> Signup(LoginDTO model)
-        => await _loginBusiness.Signup(_mapper.Map<Login>(model));
+    [AllowAnonymous]
+    public async Task<LoginResponseDTO> Signup(LoginDTO model)
+    {
+        var login = await _loginBusiness.Signup(_mapper.Map<Login>(model));
+        var userDto = _mapper.Map<UserDTO>(await _userBusiness.GetUserByEmail(model.Email));
+        return _authorization.ResponseAuth(Convert.ToString(userDto?.IndividualEntityId), login.Email, login.Role);
+    }
 
     public async Task<bool> ResetPassword(LoginDTO model)
         => await _loginBusiness.ResetPassword(_mapper.Map<Login>(model));
 
-    public async Task<LoginResponseDTO> ResendEmailConfirmation(LoginDTO model)
-    {
-        //=> await _loginBusiness.ResendEmailConfirmation(_mapper.Map<Login>(model));
-        return new LoginResponseDTO();
-    }
+    public Task<LoginResponseDTO> ResendEmailConfirmation(LoginDTO model)
+        => throw new NotImplementedException();
 }

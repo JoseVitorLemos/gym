@@ -162,6 +162,29 @@ namespace Gym.Data.Migrations
                     b.ToTable("Logins", (string)null);
                 });
 
+            modelBuilder.Entity("Gym.Domain.Entities.LoginConfirmation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Code")
+                        .HasMaxLength(6)
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("LoginId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LoginId");
+
+                    b.ToTable("LoginConfirmations", (string)null);
+                });
+
             modelBuilder.Entity("Gym.Domain.Entities.Professional", b =>
                 {
                     b.Property<Guid>("Id")
@@ -259,6 +282,17 @@ namespace Gym.Data.Migrations
                     b.Navigation("Workout");
                 });
 
+            modelBuilder.Entity("Gym.Domain.Entities.LoginConfirmation", b =>
+                {
+                    b.HasOne("Gym.Domain.Entities.Login", "Login")
+                        .WithMany("LoginConfirmation")
+                        .HasForeignKey("LoginId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Login");
+                });
+
             modelBuilder.Entity("Gym.Domain.Entities.Professional", b =>
                 {
                     b.HasOne("Gym.Domain.Entities.IndividualEntity", "IndividualEntity")
@@ -279,7 +313,7 @@ namespace Gym.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Gym.Domain.Entities.Login", "Login")
-                        .WithMany()
+                        .WithMany("User")
                         .HasForeignKey("LoginId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -326,6 +360,13 @@ namespace Gym.Data.Migrations
                     b.Navigation("User");
 
                     b.Navigation("Workout");
+                });
+
+            modelBuilder.Entity("Gym.Domain.Entities.Login", b =>
+                {
+                    b.Navigation("LoginConfirmation");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Gym.Domain.Entities.Professional", b =>

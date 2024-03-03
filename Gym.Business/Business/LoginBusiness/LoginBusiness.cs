@@ -18,13 +18,13 @@ public class LoginBusiness : ILoginBusiness
     private readonly IUnitOfWork _unitOfWork;
 
     public LoginBusiness(IRepository<Login> loginRepository,
-                         IRepository<LoginConfirmation> loginValidations,
+                         IRepository<LoginConfirmation> loginConfirmation,
                          IRepository<IndividualEntity> individualEntit,
                          IUnitOfWork unitOfWork,
                          ISmtpSender mail)
     {
         _loginRepository = loginRepository;
-        _emailConfirmation = loginValidations;
+        _emailConfirmation = loginConfirmation;
         _individualEntity = individualEntit;
         _unitOfWork = unitOfWork;
         _mail = mail;
@@ -43,9 +43,13 @@ public class LoginBusiness : ILoginBusiness
         return login;
     }
 
-    public async Task<bool> Signup(Login entity)
+    public async Task<Login> Signup(Login entity)
     {
-        var login = await FindByEmail(entity.Email);
+        var login = await _loginRepository
+            .FindByCondition(x => x.Email.ToLower() == entity.Email.ToLower());
+
+        if (login.FirstOrDefault() != null)
+            throw new GlobalException(HttpStatusCodes.BadRequest, "Email already registered");
 
         if (!entity.Role.Equals(Roles.EmailConfirmation))
             throw new GlobalException(HttpStatusCodes.BadRequest, "Error invalid role on created user");
@@ -55,24 +59,26 @@ public class LoginBusiness : ILoginBusiness
             await _unitOfWork.BeginTransactionAsync();
 
             entity.SetPassword(entity.Password);
-            var result = await _loginRepository.Insert(entity);
+            await _loginRepository.Insert(entity);
 
-            _mail.MailBody = "Confirm the email";
-            _mail.Title = "Create account on gym";
+            int codeConfirmation = RandomHelpers.GenerateRandomNumbers(6);
+
+            var confirmation = new LoginConfirmation(entity.Id, codeConfirmation);
+            await _emailConfirmation.Insert(confirmation);
+
+            _mail.MailBody = string.Format("Confirmation Code: {0}", codeConfirmation);
+            _mail.Title = "Gym confirmation account";
             _mail.To = entity.Email;
-            await _mail.SendEmail();
+           await _mail.SendEmail();
 
             await _unitOfWork.CommitAsync();
 
-            return result;
+            return entity;
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            throw new GlobalException(HttpStatusCodes.InternalServerError, e.Message);
-        }
-        finally
-        {
-            await _unitOfWork.DisposeAsync();
+            await _unitOfWork.RollbackAsync();
+            throw new Exception(ex.Message, ex.InnerException);
         }
     }
 
@@ -98,7 +104,7 @@ public class LoginBusiness : ILoginBusiness
         var login = await _loginRepository
             .FindByCondition(x => x.Email.ToLower() == emailLower);
 
-        if (login is null)
+        if (login.FirstOrDefault() is null)
             throw new GlobalException(HttpStatusCodes.BadRequest, "Email not registered");
 
         return login.First();
@@ -130,11 +136,8 @@ public class LoginBusiness : ILoginBusiness
         }
         catch (Exception e)
         {
+            await _unitOfWork.RollbackAsync();
             throw new GlobalException(HttpStatusCodes.InternalServerError, e.Message);
-        }
-        finally
-        {
-            await _unitOfWork.DisposeAsync();
         }
     }
 }

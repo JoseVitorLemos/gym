@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Gym.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class first_migration : Migration
+    public partial class StartDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -75,6 +75,26 @@ namespace Gym.Data.Migrations
                         name: "FK_PROFESSIONALS_INDIVIDUAL_ENTITIES_IndividualEntityId",
                         column: x => x.IndividualEntityId,
                         principalTable: "INDIVIDUAL_ENTITIES",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LoginConfirmations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LoginId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Code = table.Column<int>(type: "int", maxLength: 6, nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LoginConfirmations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LoginConfirmations_Logins_LoginId",
+                        column: x => x.LoginId,
+                        principalTable: "Logins",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -189,6 +209,11 @@ namespace Gym.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_LoginConfirmations_LoginId",
+                table: "LoginConfirmations",
+                column: "LoginId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Logins_Email",
                 table: "Logins",
                 column: "Email",
@@ -230,6 +255,9 @@ namespace Gym.Data.Migrations
         {
             migrationBuilder.DropTable(
                 name: "EXERCISES");
+
+            migrationBuilder.DropTable(
+                name: "LoginConfirmations");
 
             migrationBuilder.DropTable(
                 name: "USERS");

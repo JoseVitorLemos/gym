@@ -7,7 +7,7 @@ public sealed class GlobalException : Exception
 {
     public HttpStatusCodes StatusCode { get; set; }
 
-    public GlobalException(HttpStatusCodes statusCode, string message) : base(message)
+    public GlobalException(HttpStatusCodes statusCode, string message, Exception? innerException = null) : base(message, innerException)
         => StatusCode = statusCode;
 
     public static void When(bool hasError, string error, HttpStatusCodes statusCode = (HttpStatusCodes)400)

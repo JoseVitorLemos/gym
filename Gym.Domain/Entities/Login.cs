@@ -13,6 +13,7 @@ public sealed class Login : BaseEntity
     public bool EmailConfirmation { get; set; }
 
     public ICollection<User> User { get; set; }
+    public ICollection<LoginConfirmation> LoginConfirmation { get; set; }
 
     public Login() { }
 

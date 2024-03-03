@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Gym.Data.DatabaseContext;
 using Gym.Domain.Interfaces;
 using Gym.Domain.Entities;
+using Gym.Helpers.Enums;
+using Gym.Helpers.Exceptions;
 
 namespace Gym.Data.Repositories;
 
@@ -25,7 +27,10 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
             await _dbContext.SaveChangesAsync();
             return true;
         }
-        catch { return false; }
+        catch (Exception e)
+        {
+            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {entity.GetType().Name}", e.InnerException);
+        }
     }
 
     public async Task<bool> InsertAll(List<T> entity)
@@ -36,7 +41,10 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
             await _dbContext.SaveChangesAsync();
             return true;
         }
-        catch { return false; }
+        catch (Exception e)
+        {
+            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {entity.GetType().Name}", e.InnerException);
+        }
     }
 
     public async Task<T> GetById(Guid id)
@@ -79,7 +87,10 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
             await _dbContext.SaveChangesAsync();
             return true;
         }
-        catch { return false; }
+        catch (Exception e)
+        {
+            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {entity.GetType().Name}", e.InnerException);
+        }
     }
 
     public async Task<bool> UpdateAll(List<T> entities)
@@ -90,7 +101,10 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
             await _dbContext.SaveChangesAsync();
             return true;
         }
-        catch { return false; }
+        catch (Exception e)
+        {
+            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {entities.GetType().Name}", e.InnerException);
+        }
     }
 
     public async Task<bool> Delete(Guid id)
@@ -102,7 +116,10 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
             await _dbContext.SaveChangesAsync();
             return true;
         }
-        catch { return false; }
+        catch (Exception e)
+        {
+            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on delete", e.InnerException);
+        }
     }
 
     public async Task<bool> DeleteAll(List<T> entities)
@@ -113,7 +130,10 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
             await _dbContext.SaveChangesAsync();
             return true;
         }
-        catch { return false; }
+        catch (Exception e)
+        {
+            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {entities.GetType().Name}", e.InnerException);
+        }
     }
 
     public async Task<bool> EnableOrDisable(Guid id, bool status)
@@ -126,7 +146,10 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
             await _dbContext.SaveChangesAsync();
             return true;
         }
-        catch { return false; }
+        catch (Exception e)
+        {
+            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on EnableOrDisable", e.InnerException);
+        }
     }
 
     private int Skip(int page)

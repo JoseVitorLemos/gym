@@ -7,7 +7,7 @@ namespace Gym.Presentation.Controllers.Exercises;
 
 [Route("v1/[controller]")]
 [ApiController]
-[Authorize(Roles = "Admin,Personal")]
+[Authorize(Roles = "Admin,Personal,FitnessClient")]
 public class ExercisesController : BaseController
 {
     private readonly IExercisesService _workoutService;
@@ -17,7 +17,7 @@ public class ExercisesController : BaseController
 
     [HttpGet("ListExercises")]
     public async Task<IActionResult> ListExercises()
-       => GetResponse(await _workoutService.ListExercises());
+        => GetResponse(await _workoutService.ListExercises());
 
     [HttpGet("GetExercises")]
     public async Task<IActionResult> GetExercises(Guid id)
