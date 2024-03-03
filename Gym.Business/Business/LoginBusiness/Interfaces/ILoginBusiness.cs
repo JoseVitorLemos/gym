@@ -7,4 +7,5 @@ public interface ILoginBusiness
     Task<Login> Login(Login entity);
     Task<bool> Signup(Login entity);
     Task<bool> ResetPassword(Login entity);
+    Task<Login> ResendEmailConfirmation(Login entity);
 }

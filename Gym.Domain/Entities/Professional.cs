@@ -21,6 +21,6 @@ public sealed class Professional : BaseEntity
 
     private void Validations(Guid individualEntityId)
     {
-        GlobalException.When(!GuidValidations.IsValid(individualEntityId), "IndividualEntityId is required.");
+        GlobalException.When(!individualEntityId.IsValid(), "IndividualEntityId is required.");
     }
 }

@@ -28,12 +28,7 @@ public class LoginService : ILoginService
         var loginDto = await _loginBusiness.Login(_mapper.Map<Login>(model));
         var userDto = _mapper.Map<UserDTO>(await _userBusiness.GetUserByEmail(model.Email));
 
-        var response = new LoginResponseDTO
-        {
-            Token = _authorization.GetToken(Convert.ToString(userDto?.IndividualEntityId), loginDto.Email, loginDto.Role.ToString())
-        };
-
-        return response;
+        return _authorization.ResponseAuth(Convert.ToString(userDto?.IndividualEntityId), loginDto.Email, loginDto.Role);
     }
 
     public async Task<bool> Signup(LoginDTO model)
@@ -41,4 +36,10 @@ public class LoginService : ILoginService
 
     public async Task<bool> ResetPassword(LoginDTO model)
         => await _loginBusiness.ResetPassword(_mapper.Map<Login>(model));
+
+    public async Task<LoginResponseDTO> ResendEmailConfirmation(LoginDTO model)
+    {
+        //=> await _loginBusiness.ResendEmailConfirmation(_mapper.Map<Login>(model));
+        return new LoginResponseDTO();
+    }
 }

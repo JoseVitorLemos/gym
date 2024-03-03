@@ -1,7 +1,12 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Gym.Domain.Enums;
+using Gym.Helpers.Exceptions;
 using Gym.Helpers.Utils;
+using Gym.Helpers.Validations;
+using Gym.Services.Authentication.TokenService.Enum;
+using Gym.Services.DTO;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Gym.Services.Authentication.TokenService;
@@ -15,9 +20,9 @@ public class TokenService : ITokenService
 
         var subject = new ClaimsIdentity(new[]
         {
-            new Claim(ClaimTypes.Name, clainId),
-            new Claim(ClaimTypes.Email, clainEmail),
-            new Claim(ClaimTypes.Role, clainRole),
+            new Claim(ClaimNames.Id.ToString(), clainId),
+            new Claim(ClaimNames.Email.ToString(), clainEmail),
+            new Claim(ClaimTypes.Role, clainRole)
         });
 
         var credentials = new SigningCredentials(new SymmetricSecurityKey(key),
@@ -31,5 +36,23 @@ public class TokenService : ITokenService
         };
 
         return token.WriteToken(token.CreateToken(tokenDescriptor));
+    }
+
+    public LoginResponseDTO ResponseAuth(string id, string email, Roles role)
+    {
+        Validations(email, role);
+
+        var response = new LoginResponseDTO
+        {
+            Token = GetToken(Convert.ToString(id), email, role.ToString())
+        };
+
+        return response;
+    }
+
+    private void Validations(string email, Roles role)
+    {
+        GlobalException.When(string.IsNullOrEmpty(email), "Email cannot be null");
+        GlobalException.When(!EnumValidations.IsValidEnum<Roles>(role), "Invalid Role provided");
     }
 }

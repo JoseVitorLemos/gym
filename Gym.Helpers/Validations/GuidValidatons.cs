@@ -2,6 +2,6 @@ namespace Gym.Helpers.Utils;
 
 public static class GuidValidations
 {
-    public static bool IsValid(Guid? value)
-        => value.HasValue && value != Guid.Empty;
+    public static bool IsValid(this Guid value)
+        => value != Guid.Empty;
 }

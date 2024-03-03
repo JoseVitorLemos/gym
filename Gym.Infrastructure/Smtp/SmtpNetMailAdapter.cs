@@ -44,15 +44,21 @@ public class SmtpNetMailAdapter : ISmtpSender
         _enableSsl = bool.Parse(enableSSL);
     }
 
-    public async Task<bool> SendEmail()
+    public async Task<bool> SendEmail(string? emailAdress = null, string? mailBody = null,
+            string? title = null)
     {
+        if (string.IsNullOrEmpty(emailAdress))
+            To = emailAdress ?? string.Empty;
+
+        if (string.IsNullOrEmpty(mailBody))
+            MailBody = mailBody ?? string.Empty;
+
+        if (string.IsNullOrEmpty(mailBody))
+            Title = title ?? string.Empty;
+
         ValidateEmail();
 
-        SmtpClient client = new SmtpClient(_host, _port);
-        client.Credentials = new NetworkCredential(_userName, _password);
-        client.EnableSsl = _enableSsl;
-        client.Host = _host;
-        client.Port = _port;
+        SmtpClient client = GetClient();
 
         MailMessage message = new MailMessage(_emailFrom,
                                               To,
@@ -69,6 +75,16 @@ public class SmtpNetMailAdapter : ISmtpSender
         {
             throw new GlobalException(HttpStatusCodes.InternalServerError, e.Message);
         }
+    }
+
+    private SmtpClient GetClient()
+    {
+        SmtpClient client = new SmtpClient(_host, _port);
+        client.Credentials = new NetworkCredential(_userName, _password);
+        client.EnableSsl = _enableSsl;
+        client.Host = _host;
+        client.Port = _port;
+        return client;
     }
 
     private void ValidationsSettings(string emailFrom, string userName, string password,
