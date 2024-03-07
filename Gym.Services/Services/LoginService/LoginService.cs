@@ -40,7 +40,7 @@ public class LoginService : ILoginService
     }
 
     public async Task<bool> ResetPassword(LoginDTO model)
-        => await _loginBusiness.ResetPassword(_mapper.Map<Login>(model));
+        => await _loginBusiness.ResetPassword(_mapper.Map<Login>(model), model.NewPassword);
 
     public Task<LoginResponseDTO> ResendEmailConfirmation(LoginDTO model)
         => throw new NotImplementedException();

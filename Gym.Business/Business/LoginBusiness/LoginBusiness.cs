@@ -82,14 +82,14 @@ public class LoginBusiness : ILoginBusiness
         }
     }
 
-    public async Task<bool> ResetPassword(Login entity)
+    public async Task<bool> ResetPassword(Login entity, string newPassword)
     {
         var login = await FindByEmail(entity.Email);
-
         bool validPassword =
-            BcryptAdapter.IsValidPassword(entity.Password, login.Password);
+            BcryptAdapter.IsValidPassword(password: entity.Password,
+                                          hashPassword: login.Password);
 
-        login.SetPassword(entity.Password);
+        login.SetPassword(newPassword);
 
         if (!validPassword)
             throw new GlobalException(HttpStatusCodes.BadRequest, "Invalid password");

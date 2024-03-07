@@ -6,6 +6,6 @@ public interface ILoginBusiness
 {
     Task<Login> Login(Login entity);
     Task<Login> Signup(Login entity);
-    Task<bool> ResetPassword(Login entity);
+    Task<bool> ResetPassword(Login entity, string newPassword);
     Task<Login> ResendEmailConfirmation(Login entity);
 }

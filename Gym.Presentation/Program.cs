@@ -1,5 +1,6 @@
 using System.Text;
 using Gym.DependencyInversion;
+using Gym.DependencyInversion.Swagger;
 using Gym.Helpers.ConfigurationManager;
 using Gym.Presentation.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,9 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 IServiceCollection services = builder.Services;
 
 services.AddEndpointsApiExplorer();
-services.AddControllers();
-services.AddSwaggerGen();
 services.AddInfraInjection();
+services.AddInfrastructureSwagger();
+services.AddControllers();
 
 services.Configure<FormOptions>(opt =>
 {
