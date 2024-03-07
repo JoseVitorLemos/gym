@@ -39,7 +39,7 @@ public class LoginService : ILoginService
         return _authorization.ResponseAuth(Convert.ToString(userDto?.IndividualEntityId), login.Email, login.Role);
     }
 
-    public async Task<bool> ResetPassword(LoginDTO model)
+    public async Task<bool> ResetPassword(LoginResetPasswordDTO model)
         => await _loginBusiness.ResetPassword(_mapper.Map<Login>(model), model.NewPassword);
 
     public Task<LoginResponseDTO> ResendEmailConfirmation(LoginDTO model)

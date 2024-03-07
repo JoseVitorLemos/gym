@@ -6,5 +6,5 @@ public interface ILoginService
 {
     Task<LoginResponseDTO> Login(LoginDTO model);
     Task<LoginResponseDTO> Signup(LoginDTO model);
-    Task<bool> ResetPassword(LoginDTO entity);
+    Task<bool> ResetPassword(LoginResetPasswordDTO entity);
 }

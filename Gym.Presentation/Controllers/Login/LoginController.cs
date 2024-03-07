@@ -27,7 +27,7 @@ public class LoginController : BaseController
         => ApiResponse(await _userService.Signup(model));
 
     [HttpPost("ResetPassword")]
-    public async Task<IActionResult> ResetPassword([FromBody] LoginDTO model)
+    public async Task<IActionResult> ResetPassword([FromBody] LoginResetPasswordDTO model)
         => ApiResponse(await _userService.ResetPassword(model));
 
 //ResendEmailConfirmation

@@ -37,7 +37,10 @@ public class AutoMapperProfile : Profile
     }
 
     private void Login()
-        => CreateMap<Login, LoginDTO>().ReverseMap();
+    {
+        CreateMap<Login, LoginDTO>().ReverseMap();
+        CreateMap<Login, LoginResetPasswordDTO>().ReverseMap();
+    }
 
     private void User()
         => CreateMap<User, UserDTO>()
