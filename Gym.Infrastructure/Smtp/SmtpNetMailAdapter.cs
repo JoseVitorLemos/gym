@@ -1,8 +1,10 @@
-using System.Configuration;
 using System.Net;
 using System.Net.Mail;
+using Gym.Helpers.ConfigurationManager;
+using Gym.Helpers.ConfigurationManager.Types;
 using Gym.Helpers.Enums;
 using Gym.Helpers.Exceptions;
+using Microsoft.Extensions.Configuration;
 
 namespace Gym.Infrastructure.Smtp;
 
@@ -20,32 +22,43 @@ public class SmtpNetMailAdapter : ISmtpSender
     private readonly int _port;
     private readonly bool _enableSsl;
 
-    public SmtpNetMailAdapter()
+    public SmtpNetMailAdapter(IConfiguration configuration)
     {
-        string emailFrom = ConfigurationManager.AppSettings["Email"];
-        string userName = ConfigurationManager.AppSettings["userName"];
-        string password = ConfigurationManager.AppSettings["password"];
-        string host = ConfigurationManager.AppSettings["host"];
-        string port = ConfigurationManager.AppSettings["port"];
-        string enableSSL = ConfigurationManager.AppSettings["EnableSSL"];
+        SmtpSettingsType smtpSettings = CustomConfiguration.GetSmtpSettings;
 
-        ValidationsSettings(emailFrom, userName, password, host, port, enableSSL);
+        string emailFrom = smtpSettings.EmailFrom;
+        string userName = smtpSettings.UserName;
+        string password = smtpSettings.Password;
+        string host = smtpSettings.Host;
+        int port = smtpSettings.Port;
+        bool enableSSL = smtpSettings.EnableSSL;
+
 
         MailBody = string.Empty;
         Title = string.Empty;
         To = string.Empty;
         IsBodyHtml = true;
 
-        _emailFrom = emailFrom;
-        _userName = userName;
-        _password = password;
-        _host = host;
-        _port = int.Parse(port);
-        _enableSsl = bool.Parse(enableSSL);
+        _emailFrom = smtpSettings.EmailFrom;;
+        _userName = smtpSettings.UserName;
+        _password = smtpSettings.Password;
+        _host = smtpSettings.Host;
+        _port = smtpSettings.Port;
+        _enableSsl = smtpSettings.EnableSSL;
     }
 
-    public async Task<bool> SendEmail(string? emailAdress = null, string? mailBody = null,
-            string? title = null)
+    private SmtpClient GetClient()
+    {
+        SmtpClient client = new SmtpClient(_host, _port);
+        client.Credentials = new NetworkCredential(_userName, _password);
+        client.EnableSsl = _enableSsl;
+        client.Host = _host;
+        client.Port = _port;
+        return client;
+    }
+
+    public async Task<bool> SendEmail(string emailAdress = null,
+            string mailBody = null, string title = null)
     {
         if (string.IsNullOrEmpty(To))
             To = emailAdress ?? string.Empty;
@@ -75,27 +88,6 @@ public class SmtpNetMailAdapter : ISmtpSender
         {
             throw new GlobalException(HttpStatusCodes.InternalServerError, e.Message);
         }
-    }
-
-    private SmtpClient GetClient()
-    {
-        SmtpClient client = new SmtpClient(_host, _port);
-        client.Credentials = new NetworkCredential(_userName, _password);
-        client.EnableSsl = _enableSsl;
-        client.Host = _host;
-        client.Port = _port;
-        return client;
-    }
-
-    private void ValidationsSettings(string emailFrom, string userName, string password,
-            string host, string port, string enableSSL)
-    {
-        GlobalException.When(string.IsNullOrEmpty(emailFrom), "Invalid SMTP email provided");
-        GlobalException.When(string.IsNullOrEmpty(userName), "Invalid SMTP userName provided");
-        GlobalException.When(string.IsNullOrEmpty(password), "Invalid SMTP password provided");
-        GlobalException.When(string.IsNullOrEmpty(host), "Invalid SMTP host provided");
-        GlobalException.When(!int.TryParse(port, out int validatePort), "Invalid SMTP port provided");
-        GlobalException.When(!bool.TryParse(enableSSL, out bool validateEnableSSL), "Invalid SMTP enableSSL provided");
     }
 
     private void ValidateEmail()

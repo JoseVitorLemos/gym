@@ -3,11 +3,11 @@ using System.Security.Claims;
 using System.Text;
 using Gym.Domain.Enums;
 using Gym.Helpers.Exceptions;
-using Gym.Helpers.Utils;
 using Gym.Helpers.Validations;
 using Gym.Services.Authentication.TokenService.Enum;
 using Gym.Services.DTO;
 using Microsoft.IdentityModel.Tokens;
+using Gym.Helpers.ConfigurationManager;
 
 namespace Gym.Services.Authentication.TokenService;
 
@@ -16,7 +16,7 @@ public class TokenService : ITokenService
     public string GetToken(string clainId, string clainEmail, string clainRole)
     {
         var token = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(InfraHelpers.GetAuthSecret());
+        var key = Encoding.ASCII.GetBytes(CustomConfiguration.GetAppSettings.Secret);
 
         var subject = new ClaimsIdentity(new[]
         {
@@ -31,7 +31,7 @@ public class TokenService : ITokenService
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = subject,
-            Expires = DateTime.UtcNow.AddHours(InfraHelpers.GetExpireTime()),
+            Expires = DateTime.UtcNow.AddHours(CustomConfiguration.GetAppSettings.ExpireHours),
             SigningCredentials = credentials
         };
 

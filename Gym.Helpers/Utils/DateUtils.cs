@@ -1,4 +1,4 @@
-namespace Gym.Helpers.Validations;
+namespace Gym.Helpers.Utils;
 
 public static class DateUtils
 {

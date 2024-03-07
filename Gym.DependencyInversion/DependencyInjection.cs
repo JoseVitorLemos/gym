@@ -7,31 +7,31 @@ using Gym.Services.AutoMapperProfile;
 using Gym.Data.Repositories;
 using Gym.Domain.Interfaces;
 using Gym.Data.UnitOfWork;
-using Gym.Infrastructure.Smtp;
+using Gym.Helpers.ConfigurationManager;
 
 namespace Gym.DependencyInversion;
 
 public static class DependencyInjection
 {
+    private static string[] AssemblysNames = new string[] { "Gym.Services", "Gym.Business", "Gym.Infrastructure", "Gym.Helpers" };
+
     public static IServiceCollection AddInfraInjection(this IServiceCollection services)
     {
         RegisterDbConstext(services);
-        RegisterServices(services);
-        RegisterBusiness(services);
+        RegisterServicesFromAssembly(services, AssemblysNames);
 
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
-        services.AddScoped(typeof(ISmtpSender), typeof(SmtpNetMailAdapter));
         services.AddAutoMapper(typeof(AutoMapperProfile));
         return services;
     }
 
     private static void RegisterDbConstext(IServiceCollection services)
     {
-        switch (InfraHelpers.GetConnectionString().ProviderName)
+        switch (CustomConfiguration.GetAppSettings.Provider)
         {
             case ProvidersTypes.SqlServer:
-                services.AddDbContext<DataContext>(options => options.UseSqlServer(InfraHelpers.GetConnectionString().ConnectionString,
+                services.AddDbContext<DataContext>(options => options.UseSqlServer(CustomConfiguration.GetConnectionStrings.DefaultConnectionStrings,
                                                    x => x.MigrationsAssembly(typeof(DataContext).Assembly.FullName)));
                 break;
 
@@ -40,28 +40,21 @@ public static class DependencyInjection
         }
     }
 
-    private static void AddDependencyInjectin(IServiceCollection services, string assemblyClass,
-                                         string assemblyInterface)
+    private static void AddDependencyInjectin(IServiceCollection services, string assemblyName)
     {
-        foreach (var classType in AssemblyHelpers.GetClasses(assemblyClass))
+        foreach (var classType in AssemblyHelpers.GetClasses(assemblyName))
         {
-            var interfaces = AssemblyHelpers.GetInterfaces(assemblyInterface)
+            var interfacesType = AssemblyHelpers.GetInterfaces(assemblyName)
                                             .Where(x => x.IsAssignableFrom(classType));
 
-            foreach (var interfaceType in interfaces)
+            foreach (var interfaceType in interfacesType)
                 services.AddScoped(interfaceType, classType);
         }
     }
 
-    private static void RegisterServices(IServiceCollection services)
+    private static void RegisterServicesFromAssembly(IServiceCollection services, string[] assemblysNames)
     {
-        string assemblyServiceLayer = "Gym.Services";
-        AddDependencyInjectin(services, assemblyServiceLayer, assemblyServiceLayer);
-    }
-
-    private static void RegisterBusiness(IServiceCollection services)
-    {
-        string assemblyBusinessLayer = "Gym.Business";
-        AddDependencyInjectin(services, assemblyBusinessLayer, assemblyBusinessLayer);
+        foreach (var assemblyName in assemblysNames)
+            AddDependencyInjectin(services, assemblyName);
     }
 }

@@ -5,12 +5,9 @@ using Gym.Domain.Entities;
 using Gym.Services.Authentication.TokenService;
 using Gym.Services.DTO;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Gym.Services.LoginService;
 
-[ApiController]
-[Authorize(Roles = "Admin,Personal,FitnessClient")]
 public class LoginService : ILoginService
 {
     private readonly ILoginBusiness _loginBusiness;
@@ -27,7 +24,6 @@ public class LoginService : ILoginService
         _userBusiness = userBusiness;
     }
 
-    [AllowAnonymous]
     public async Task<LoginResponseDTO> Login(LoginDTO model)
     {
         var login = await _loginBusiness.Login(_mapper.Map<Login>(model));

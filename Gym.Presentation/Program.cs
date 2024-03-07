@@ -1,6 +1,6 @@
 using System.Text;
 using Gym.DependencyInversion;
-using Gym.Helpers.Utils;
+using Gym.Helpers.ConfigurationManager;
 using Gym.Presentation.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
@@ -14,10 +14,12 @@ services.AddEndpointsApiExplorer();
 services.AddControllers();
 services.AddSwaggerGen();
 services.AddInfraInjection();
+
 services.Configure<FormOptions>(opt =>
 {
     opt.MultipartBodyLengthLimit = (10 * 1024 * 1024);
 });
+
 services.AddAuthentication(x =>
     {
         x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -30,7 +32,7 @@ services.AddAuthentication(x =>
         x.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(InfraHelpers.GetAuthSecret())),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(CustomConfiguration.GetAppSettings.Secret)),
             ValidateIssuer = false,
             ValidateAudience = false
         };
@@ -42,11 +44,8 @@ services.AddTransient<GlobalExceptionHandling>();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseAuthentication();
 app.UseAuthorization();

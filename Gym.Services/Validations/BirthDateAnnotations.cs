@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Gym.Helpers.Validations;
+using Gym.Helpers.Utils;
 
 namespace Gym.Validations;
 
