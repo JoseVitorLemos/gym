@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Gym.Presentation.Controllers.Exercises;
 
-[Route("v1/[controller]")]
+[Route("api/[controller]")]
 [ApiController]
 [Authorize(Roles = "Admin,Personal,FitnessClient")]
 public class ExercisesController : BaseController

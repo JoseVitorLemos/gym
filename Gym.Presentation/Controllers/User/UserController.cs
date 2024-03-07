@@ -4,7 +4,7 @@ using Gym.Services.UserService;
 
 namespace Gym.Presentation.Controllers.User;
 
-[Route("v1/[controller]")]
+[Route("api/[controller]")]
 [ApiController]
 public class UserController : BaseController
 {
