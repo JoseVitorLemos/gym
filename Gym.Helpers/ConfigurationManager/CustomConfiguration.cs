@@ -20,4 +20,8 @@ public static class CustomConfiguration
 
     public static SmtpSettingsType GetSmtpSettings
         => _configuration.GetSection("Smtp").Get<SmtpSettingsType>();
+
+    public static JWTSettingsType GetJWTSettings
+        => _configuration.GetSection("JwtSettings").Get<JWTSettingsType>();
+
 }

@@ -19,13 +19,12 @@ public class SmtpSettingsType
 
         DeliveryMethod = deliveryMethod;
         EmailFrom = emailFrom;
-        Host = userName;
+        Host = host;
         Port = port;
         UserName = userName;
         Password = password;
         EnableSSL = enableSSL;
     }
-
 
     private void ValidationsSettings(string deliveryMethod, string emailFrom, string host,
             int port, string userName, string password, bool enableSSL)
@@ -36,5 +35,4 @@ public class SmtpSettingsType
         GlobalException.When(string.IsNullOrEmpty(host), "Invalid SMTP host provided");
         GlobalException.When(port < 1, "Invalid SMTP port provided");
     }
-
 }
