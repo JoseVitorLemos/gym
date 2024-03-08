@@ -50,7 +50,5 @@ public class GlobalExceptionHandling : IMiddleware
 
         DirectoryHelpers.SaveTextFile(filePath, $"LogFile_{currenctDate.ToString("dd-MM-yyyy")}.txt",
                                       $"Date: {currenctDate}\n\n{e}\n\n--------------------------------");
-
-        Console.WriteLine($"Exception saved with success: {filePath}");
     }
 }

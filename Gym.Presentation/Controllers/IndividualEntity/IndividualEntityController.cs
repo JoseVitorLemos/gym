@@ -7,7 +7,7 @@ namespace Gym.Presentation.Controllers.IndividualEntity;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = "Admin,Personal")]
+[Authorize(Policy = "AllValidUsers")]
 public class IndividualEntityController : BaseController
 {
     private readonly IIndividualEntityService _individualEntityService;

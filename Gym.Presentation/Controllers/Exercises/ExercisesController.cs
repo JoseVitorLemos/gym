@@ -7,7 +7,7 @@ namespace Gym.Presentation.Controllers.Exercises;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = "Admin,Personal,FitnessClient")]
+[Authorize(Policy = "AllValidUsers")]
 public class ExercisesController : BaseController
 {
     private readonly IExercisesService _workoutService;

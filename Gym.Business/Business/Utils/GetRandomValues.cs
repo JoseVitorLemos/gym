@@ -1,12 +1,16 @@
+using System.Text;
+
 namespace Gym.Business.Utils;
 
 public static class RandomHelpers
 {
-    public static int GenerateRandomNumbers(int numberLenght, int? start = null, int? end = null)
+    public static string GenerateRandomNumbers(int numberLenght, int? start = null, int? end = null)
     {
-        string randomNumbers = string.Join("", Enumerable.Range(1, numberLenght)
-            .Select(x => new Random().Next(start ?? 0, end ?? 10)).ToList());
+        string randomNumbers = string.Empty;
 
-        return Convert.ToInt32(randomNumbers[..numberLenght]);
+        for (int i = 1; i <= numberLenght; i++)
+            randomNumbers += Convert.ToString(new Random().Next(start ?? 0, end ?? 10));
+
+        return randomNumbers[..numberLenght];
     }
 }

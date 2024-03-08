@@ -38,8 +38,13 @@ public class AutoMapperProfile : Profile
 
     private void Login()
     {
-        CreateMap<Login, LoginDTO>().ReverseMap();
-        CreateMap<Login, LoginResetPasswordDTO>().ReverseMap();
+        CreateMap<Login, LoginDTO>()
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(x => x.Email.ToLower()))
+            .ReverseMap();
+
+        CreateMap<Login, LoginResetPasswordDTO>()
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(x => x.Email.ToLower()))
+            .ReverseMap();
     }
 
     private void User()

@@ -16,7 +16,7 @@ public class TokenService : ITokenService
     public string GetToken(string clainId, string clainEmail, string clainRole)
     {
         var token = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(CustomConfiguration.GetAppSettings.Secret);
+        var key = Encoding.ASCII.GetBytes(CustomConfiguration.GetJWTSettings.Secret);
 
         var subject = new ClaimsIdentity(new[]
         {
@@ -31,7 +31,7 @@ public class TokenService : ITokenService
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = subject,
-            Expires = DateTime.UtcNow.AddHours(CustomConfiguration.GetAppSettings.ExpireHours),
+            Expires = DateTime.UtcNow.AddHours(CustomConfiguration.GetJWTSettings.ExpireHours),
             SigningCredentials = credentials
         };
 

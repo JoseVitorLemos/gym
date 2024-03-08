@@ -42,6 +42,6 @@ public class LoginService : ILoginService
     public async Task<bool> ResetPassword(LoginResetPasswordDTO model)
         => await _loginBusiness.ResetPassword(_mapper.Map<Login>(model), model.NewPassword);
 
-    public Task<LoginResponseDTO> ResendEmailConfirmation(LoginDTO model)
-        => throw new NotImplementedException();
+    public async Task<bool> ResendEmailConfirmation(string email)
+        => await _loginBusiness.ResendEmailConfirmation(email);
 }

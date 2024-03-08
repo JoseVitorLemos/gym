@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Gym.Services.DTO;
 using Gym.Services.UserService;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gym.Presentation.Controllers.User;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(Roles = "Authenticated")]
 public class UserController : BaseController
 {
     private readonly IUserService _userService;

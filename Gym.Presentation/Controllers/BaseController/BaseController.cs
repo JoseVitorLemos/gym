@@ -9,7 +9,7 @@ namespace Gym.Presentation.Controllers
     {
         protected IActionResult ApiResponse<T>(T obj, string message = "")
         {
-            var response = new GlobalHttpResponse((int)HttpStatusCodes.Created, 
+            var response = new GlobalHttpResponse((int)HttpStatusCodes.Created,
                     $"{HttpContext.Request.Method} value with successfuly", obj);
 
             if ((typeof(T).IsClass || typeof(T) == typeof(List<>)) && obj is null)

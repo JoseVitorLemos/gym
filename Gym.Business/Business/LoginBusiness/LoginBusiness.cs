@@ -46,7 +46,7 @@ public class LoginBusiness : ILoginBusiness
     public async Task<Login> Signup(Login entity)
     {
         var login = await _loginRepository
-            .FindByCondition(x => x.Email.ToLower() == entity.Email.ToLower());
+            .FindByCondition(x => x.Email == entity.Email);
 
         if (login.FirstOrDefault() != null)
             throw new GlobalException(HttpStatusCodes.BadRequest, "Email already registered");
@@ -59,9 +59,10 @@ public class LoginBusiness : ILoginBusiness
             await _unitOfWork.BeginTransactionAsync();
 
             entity.SetPassword(entity.Password);
+            entity.SetStatus(false);
             await _loginRepository.Insert(entity);
 
-            int codeConfirmation = RandomHelpers.GenerateRandomNumbers(6);
+            string codeConfirmation = RandomHelpers.GenerateRandomNumbers(6);
 
             var confirmation = new LoginConfirmation(entity.Id, codeConfirmation);
             await _emailConfirmation.Insert(confirmation);
@@ -69,7 +70,7 @@ public class LoginBusiness : ILoginBusiness
             _mail.MailBody = string.Format("Confirmation Code: {0}", codeConfirmation);
             _mail.Title = "Gym confirmation account";
             _mail.To = entity.Email;
-           await _mail.SendEmail();
+            await _mail.SendEmail();
 
             await _unitOfWork.CommitAsync();
 
@@ -99,10 +100,8 @@ public class LoginBusiness : ILoginBusiness
 
     private async Task<Login> FindByEmail(string email)
     {
-        string emailLower = email.ToLower();
-
         var login = await _loginRepository
-            .FindByCondition(x => x.Email.ToLower() == emailLower);
+            .FindByCondition(x => x.Email == email);
 
         if (login.FirstOrDefault() is null)
             throw new GlobalException(HttpStatusCodes.BadRequest, "Email not registered");
@@ -110,29 +109,30 @@ public class LoginBusiness : ILoginBusiness
         return login.First();
     }
 
-    public async Task<Login> ResendEmailConfirmation(Login entity)
+    public async Task<bool> ResendEmailConfirmation(string email)
     {
         try
         {
             await _unitOfWork.BeginTransactionAsync();
 
-            int code = RandomHelpers.GenerateRandomNumbers(6);
+            string codeConfirmation = RandomHelpers.GenerateRandomNumbers(6);
 
-            var login = await FindByEmail(entity.Email);
+            var login = await FindByEmail(email);
+          
+            await _emailConfirmation
+                .ExecuteUpdate(x => x.LoginId.Equals(login.Id), x => x.SetProperty(p => p.Status, false));
 
-            var confirmation = new LoginConfirmation(login.Id, code);
+            var result = await _emailConfirmation
+                .Insert(new LoginConfirmation(login.Id, codeConfirmation));
 
-            var result = await _emailConfirmation.Insert(confirmation);
-
-            _mail.MailBody = string.Format("Confirmation Code: {0}", code);
+            _mail.MailBody = string.Format("Confirmation Code: {0}", codeConfirmation);
             _mail.Title = "Gym confirmation account";
-            _mail.To = entity.Email;
-
+            _mail.To = email;
             await _mail.SendEmail();
 
             await _unitOfWork.CommitAsync();
 
-            return login;
+            return result;
         }
         catch (Exception e)
         {

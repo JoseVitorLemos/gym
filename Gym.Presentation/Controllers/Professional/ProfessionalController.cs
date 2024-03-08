@@ -7,7 +7,7 @@ namespace Gym.Presentation.Controllers.IndividualEntity;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = "Admin,EmailConfirmation")]
+[Authorize(Roles = "Authenticated")]
 public class ProfessionalController : BaseController
 {
     private readonly IProfessionalService _professionalService;
