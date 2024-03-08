@@ -1,10 +1,11 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Gym.Data.DatabaseContext;
-using Gym.Domain.Interfaces;
 using Gym.Domain.Entities;
 using Gym.Helpers.Enums;
 using Gym.Helpers.Exceptions;
+using Microsoft.EntityFrameworkCore.Query;
+using Gym.Domain.Interfaces;
 
 namespace Gym.Data.Repositories;
 
@@ -29,7 +30,7 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         }
         catch (Exception e)
         {
-            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {entity.GetType().Name}", e.InnerException);
+            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {_dbSet.GetType().Name}", e.InnerException);
         }
     }
 
@@ -43,14 +44,14 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         }
         catch (Exception e)
         {
-            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {entity.GetType().Name}", e.InnerException);
+            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {_dbSet.GetType().Name}", e.InnerException);
         }
     }
 
     public async Task<T> GetById(Guid id)
         => await _dbSet.FindAsync(id);
 
-    public async Task<List<T>> GetAll(Expression<Func<T, bool>> filter = null, 
+    public async Task<List<T>> GetAll(Expression<Func<T, bool>> filter = null,
             bool? paginate = true, int? page = 1, int? pageSize = 10)
     {
         var query = _dbSet.AsQueryable();
@@ -89,7 +90,7 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         }
         catch (Exception e)
         {
-            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {entity.GetType().Name}", e.InnerException);
+            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {_dbSet.GetType().Name}", e.InnerException);
         }
     }
 
@@ -103,7 +104,22 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         }
         catch (Exception e)
         {
-            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {entities.GetType().Name}", e.InnerException);
+            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {_dbSet.GetType().Name}", e.InnerException);
+        }
+    }
+
+    public async Task<bool> ExecuteUpdate(Expression<Func<T, bool>> filter, 
+            Expression<Func<SetPropertyCalls<T>, SetPropertyCalls<T>>> setPropertyCalls)
+    {
+        try
+        {
+            await _dbSet.Where(filter)
+                        .ExecuteUpdateAsync(setPropertyCalls);
+            return true;
+        }
+        catch (Exception e)
+        {
+            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {_dbSet.GetType().Name}", e.InnerException);
         }
     }
 
@@ -132,7 +148,7 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         }
         catch (Exception e)
         {
-            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {entities.GetType().Name}", e.InnerException);
+            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {_dbSet.GetType().Name}", e.InnerException);
         }
     }
 
@@ -150,10 +166,5 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         {
             throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on EnableOrDisable", e.InnerException);
         }
-    }
-
-    private int Skip(int page)
-    {
-        return 1;
     }
 }

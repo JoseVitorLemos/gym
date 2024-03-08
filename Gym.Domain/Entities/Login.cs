@@ -10,22 +10,19 @@ public sealed class Login : BaseEntity
     public string Email { get; private set; }
     public string Password { get; private set; }
     public Roles Role { get; private set; }
-    public bool EmailConfirmation { get; set; }
 
     public ICollection<User> User { get; set; }
     public ICollection<LoginConfirmation> LoginConfirmation { get; set; }
 
     public Login() { }
 
-    public Login(string email, string password, Roles? role = Roles.EmailConfirmation,
-            bool? emailConfirmation = false)
+    public Login(string email, string password, Roles? role = Roles.EmailConfirmation)
     {
         Validations(email, password, role.Value);
 
         Email = email;
         Password = password;
         Role = role.Value;
-        EmailConfirmation = emailConfirmation.Value;
     }
 
     public void SetPassword(string password)
@@ -34,6 +31,9 @@ public sealed class Login : BaseEntity
         GlobalException.When(password?.Length > 16, "Invalid max password Length");
         Password = BcryptAdapter.HashPassword(password);
     }
+
+    public void SetStatus(bool status)
+        => Status = status;
 
     private void Validations(string email, string password, Roles role)
     {
