@@ -26,20 +26,12 @@ public class SmtpNetMailAdapter : ISmtpSender
     {
         SmtpSettingsType smtpSettings = CustomConfiguration.GetSmtpSettings;
 
-        string emailFrom = smtpSettings.EmailFrom;
-        string userName = smtpSettings.UserName;
-        string password = smtpSettings.Password;
-        string host = smtpSettings.Host;
-        int port = smtpSettings.Port;
-        bool enableSSL = smtpSettings.EnableSSL;
-
-
         MailBody = string.Empty;
         Title = string.Empty;
         To = string.Empty;
         IsBodyHtml = true;
 
-        _emailFrom = smtpSettings.EmailFrom;;
+        _emailFrom = smtpSettings.EmailFrom;
         _userName = smtpSettings.UserName;
         _password = smtpSettings.Password;
         _host = smtpSettings.Host;
@@ -86,7 +78,7 @@ public class SmtpNetMailAdapter : ISmtpSender
         }
         catch (Exception e)
         {
-            throw new GlobalException(HttpStatusCodes.InternalServerError, e.Message);
+            throw new GlobalException(HttpStatusCodes.InternalServerError, e.Message, e.InnerException);
         }
     }
 
