@@ -14,6 +14,8 @@ services.AddInfrastructureSwagger();
 services.AddControllers();
 services.AddLogging();
 
+services.AddHttpContextAccessor();
+
 services.Configure<FormOptions>(opt =>
 {
     opt.MultipartBodyLengthLimit = (10 * 1024 * 1024);

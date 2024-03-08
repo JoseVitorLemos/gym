@@ -5,9 +5,9 @@ using Gym.Helpers.Utils;
 using Gym.Helpers.Enums;
 using Gym.Services.AutoMapperProfile;
 using Gym.Data.Repositories;
-using Gym.Domain.Interfaces;
 using Gym.Data.UnitOfWork;
 using Gym.Helpers.ConfigurationManager;
+using Gym.Domain.Interfaces;
 
 namespace Gym.DependencyInversion;
 
