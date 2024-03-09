@@ -9,6 +9,7 @@ public sealed class LoginConfirmation : BaseEntity
     public Login Login { get; set; }
     public string Code { get; private set; }
     public bool EmailConfirmation { get; private set; }
+    public DateTime? ConfirmedAt { get; private set; }
 
     public LoginConfirmation(Guid loginId, string code)
     {
@@ -17,6 +18,12 @@ public sealed class LoginConfirmation : BaseEntity
         LoginId = loginId;
         Code = code;
     }
+
+    public void SetEmailConfirmation(bool emailConfirmation)
+        => EmailConfirmation = emailConfirmation;
+
+    public void SetConfirmedDate()
+    => ConfirmedAt = DateTime.UtcNow;
 
     private void Validations(Guid loginId, string code)
     {
