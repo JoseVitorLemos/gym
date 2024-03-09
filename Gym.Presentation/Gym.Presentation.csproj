@@ -7,6 +7,7 @@
 		<UserSecretsId>bccebf18-6c1a-4f3b-a25a-bf7f15d27e8d</UserSecretsId>
 		<IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
 		<EnvironmentName>Development</EnvironmentName>
+        <Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>
