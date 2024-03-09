@@ -108,12 +108,12 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         }
     }
 
-    public async Task<bool> ExecuteUpdate(Expression<Func<T, bool>> filter, 
+    public async Task<bool> ExecuteUpdate(Expression<Func<T, bool>> where,
             Expression<Func<SetPropertyCalls<T>, SetPropertyCalls<T>>> setPropertyCalls)
     {
         try
         {
-            await _dbSet.Where(filter)
+            await _dbSet.Where(where)
                         .ExecuteUpdateAsync(setPropertyCalls);
             return true;
         }
@@ -144,6 +144,19 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         {
             _dbSet.RemoveRange(entities);
             await _dbContext.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {_dbSet.GetType().Name}", e.InnerException);
+        }
+    }
+
+    public async Task<bool> ExecuteDelete(Expression<Func<T, bool>> where)
+    {
+        try
+        {
+            await _dbSet.Where(where).ExecuteDeleteAsync();
             return true;
         }
         catch (Exception e)
