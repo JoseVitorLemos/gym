@@ -20,8 +20,8 @@ public class TokenService : ITokenService
 
         var subject = new ClaimsIdentity(new[]
         {
-            new Claim(ClaimNames.Id.ToString(), clainId),
-            new Claim(ClaimNames.Email.ToString(), clainEmail),
+            new Claim(nameof(ClaimNames.Id), clainId),
+            new Claim(nameof(ClaimNames.Email), clainEmail),
             new Claim(ClaimTypes.Role, clainRole)
         });
 

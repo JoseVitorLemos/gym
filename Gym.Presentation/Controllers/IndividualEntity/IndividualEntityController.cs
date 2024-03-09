@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Authorization;
 namespace Gym.Presentation.Controllers.IndividualEntity;
 
 [Route("api/[controller]")]
-[ApiController]
 [Authorize(Policy = "AllValidUsers")]
 public class IndividualEntityController : BaseController
 {
     private readonly IIndividualEntityService _individualEntityService;
 
-    public IndividualEntityController(IIndividualEntityService individualEntityService)
+    public IndividualEntityController(IHttpContextAccessor httpContext, 
+            IIndividualEntityService individualEntityService) : base(httpContext)
         => _individualEntityService = individualEntityService;
 
     [HttpGet("ListIndividualEntity")]

@@ -44,4 +44,8 @@ public class LoginService : ILoginService
 
     public async Task<bool> ResendEmailConfirmation(string email)
         => await _loginBusiness.ResendEmailConfirmation(email);
+
+
+    public async Task<bool> ConfirmEmail(string email, string codeConfirmation)
+        => await _loginBusiness.ConfirmEmail(email, codeConfirmation);
 }

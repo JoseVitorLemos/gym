@@ -3,6 +3,8 @@ using System.Text.Json;
 using Gym.Helpers.Enums;
 using Gym.Helpers.Exceptions;
 using Gym.Helpers.Utils;
+using Gym.Presentation.Controllers;
+using Microsoft.AspNetCore.Components.Routing;
 
 namespace Gym.Presentation.Middlewares;
 

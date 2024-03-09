@@ -6,13 +6,12 @@ using Microsoft.AspNetCore.Authorization;
 namespace Gym.Presentation.Controllers.User;
 
 [Route("api/[controller]")]
-[ApiController]
 [Authorize(Roles = "Authenticated")]
 public class UserController : BaseController
 {
     private readonly IUserService _userService;
 
-    public UserController(IUserService userService)
+    public UserController(IHttpContextAccessor httpContext, IUserService userService) : base(httpContext)
         => _userService = userService;
 
     [HttpPost("Login")]

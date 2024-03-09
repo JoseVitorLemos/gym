@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Authorization;
 namespace Gym.Presentation.Controllers.IndividualEntity;
 
 [Route("api/[controller]")]
-[ApiController]
 [Authorize(Roles = "Authenticated")]
 public class ProfessionalController : BaseController
 {
     private readonly IProfessionalService _professionalService;
 
-    public ProfessionalController(IProfessionalService professionalService)
+    public ProfessionalController(IHttpContextAccessor httpContext,
+           IProfessionalService professionalService) : base(httpContext)
         => _professionalService = professionalService;
 
     [HttpGet("ListProfessional")]

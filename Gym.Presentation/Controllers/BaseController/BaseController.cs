@@ -8,31 +8,35 @@ using Gym.Services.Authentication.TokenService.Enum;
 
 namespace Gym.Presentation.Controllers;
 
+[ApiController]
 public abstract class BaseController : ControllerBase
 {
     public readonly ClaimsTypes ClaimsTypes;
 
-    public BaseController()
+    public BaseController(IHttpContextAccessor context)
     {
         Guid id = Guid.Empty;
         string email = string.Empty;
         Roles role = Roles.EmailConfirmation;
 
-        foreach (Claim claim in User.Claims)
-            switch (claim.Type)
-            {
-                case nameof(ClaimNames.Id):
-                    if (Guid.TryParse(claim.Value, out Guid parsedId))
-                        id = parsedId;
-                    break;
-                case nameof(ClaimNames.Email):
-                    email = claim.Value;
-                    break;
-                case ClaimTypes.Role:
-                    if (Enum.TryParse<Roles>(claim.Value, out Roles parsedRole))
-                        role = parsedRole;
-                    break;
-            }
+        if (context?.HttpContext is not null)
+        {
+            foreach (Claim claim in context.HttpContext.User.Claims)
+                switch (claim.Type)
+                {
+                    case nameof(ClaimNames.Id):
+                        if (Guid.TryParse(claim.Value, out Guid parsedId))
+                            id = parsedId;
+                        break;
+                    case nameof(ClaimNames.Email):
+                        email = claim.Value;
+                        break;
+                    case ClaimTypes.Role:
+                        if (Enum.TryParse<Roles>(claim.Value, out Roles parsedRole))
+                            role = parsedRole;
+                        break;
+                }            
+        }
 
         ClaimsTypes = new ClaimsTypes(id, email, role);
     }

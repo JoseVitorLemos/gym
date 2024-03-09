@@ -8,4 +8,5 @@ public interface ILoginService
     Task<LoginResponseDTO> Signup(LoginDTO model);
     Task<bool> ResetPassword(LoginResetPasswordDTO model);
     Task<bool> ResendEmailConfirmation(string email);
+    Task<bool> ConfirmEmail(string email, string codeConfirmation);
 }

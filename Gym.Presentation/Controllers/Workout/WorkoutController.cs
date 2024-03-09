@@ -6,13 +6,12 @@ using Microsoft.AspNetCore.Authorization;
 namespace Gym.Presentation.Controllers.Workout;
 
 [Route("api/[controller]")]
-[ApiController]
 [Authorize(Policy = "Personal")]
 public class WorkoutController : BaseController
 {
     private readonly IWorkoutService _workoutService;
 
-    public WorkoutController(IWorkoutService workoutService)
+    public WorkoutController(IHttpContextAccessor httpContext, IWorkoutService workoutService) : base(httpContext)
         => _workoutService = workoutService;
 
     [HttpGet("ListWorkout")]
