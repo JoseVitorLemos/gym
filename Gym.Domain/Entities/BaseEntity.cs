@@ -10,7 +10,7 @@ public abstract class BaseEntity
     {
         Id = Guid.NewGuid();
         Status = true;
-        CreatedAt = DateTime.Now;
+        CreatedAt = DateTime.UtcNow;
     }
 
     public void AlterStatus(bool status = false)
