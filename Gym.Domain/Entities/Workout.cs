@@ -15,6 +15,8 @@ public sealed class Workout : BaseEntity
 
     public ICollection<Exercise> Exercises { get; set; }
 
+    public Workout() { }
+
     public Workout(WorkoutDivision division, Guid individualEntityId, Guid personalId)
     {
         Validations(division, individualEntityId, personalId);
@@ -23,6 +25,9 @@ public sealed class Workout : BaseEntity
         IndividualEntityId = individualEntityId;
         PersonalId = personalId;
     }
+
+    public void SetPersonal(Guid personalId)
+        => PersonalId = personalId;
 
     private void Validations(WorkoutDivision division, Guid individualEntityId, Guid personalId)
     {

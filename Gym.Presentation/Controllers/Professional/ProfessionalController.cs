@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace Gym.Presentation.Controllers.IndividualEntity;
 
 [Route("api/[controller]")]
-[Authorize(Roles = "Authenticated")]
+[Authorize(Policy = "Authenticated")]
 public class ProfessionalController : BaseController
 {
     private readonly IProfessionalService _professionalService;
@@ -25,7 +25,10 @@ public class ProfessionalController : BaseController
 
     [HttpPost("InsertProfessional")]
     public async Task<IActionResult> InsertProfessional([FromBody] ProfessionalDTO model)
-        => ApiResponse(await _professionalService.InsertProfessional(model));
+    {
+        model.IndividualEntity.LoginId = ClaimsTypes.Id;
+        return ApiResponse(await _professionalService.InsertProfessional(model)); 
+    }
 
     [HttpPut("UpdateProfessional")]
     public async Task<IActionResult> UpdateProfessional([FromBody] ProfessionalDTO model)

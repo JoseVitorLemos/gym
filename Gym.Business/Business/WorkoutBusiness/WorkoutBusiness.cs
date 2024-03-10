@@ -1,18 +1,21 @@
 ﻿using Gym.Domain.Entities;
+using Gym.Domain.Enums;
 using Gym.Domain.Interfaces;
+using Gym.Helpers.Enums;
+using Gym.Helpers.Exceptions;
 
 namespace Gym.Business.WorkoutBusiness;
 
 public class WorkoutBusiness : IWorkoutBusiness
 {
     private readonly IRepository<Workout> _workoutRepository;
-    private readonly IRepository<IndividualEntity> _individualEntity;
+    private readonly IRepository<Professional> _profissionalRepository;
 
     public WorkoutBusiness(IRepository<Workout> workoutRepository,
-            IRepository<IndividualEntity> individualEntity)
+            IRepository<Professional> profissionalRepository)
     {
         _workoutRepository = workoutRepository;
-        _individualEntity = individualEntity;
+        _profissionalRepository = profissionalRepository;
     }
 
     public async Task<List<Workout>> ListWorkout()
@@ -23,9 +26,25 @@ public class WorkoutBusiness : IWorkoutBusiness
 
     public async Task<bool> InsertWorkout(Workout entity, Guid loginId)
     {
-        var login = _individualEntity.FindByCondition(x => x.Login.Id.Equals(loginId));
+        var professional = await _profissionalRepository
+            .FindByCondition(x => x.IndividualEntity.LoginId.Equals(loginId));
+
+        if (!professional.Any())
+            throw new GlobalException(HttpStatusCodes.BadRequest,
+                "Only professionals can register training");
+
+        if (await ExistsDivisionWorkout(entity.Division))
+            throw new GlobalException(HttpStatusCodes.BadRequest,
+                $"Workout division ({entity.Division}). Its already registered");
+
+        entity.SetPersonal(professional.First().Id);
+
         return await _workoutRepository.Insert(entity);
     }
+
+    private async Task<bool> ExistsDivisionWorkout(WorkoutDivision division)
+        => (await _workoutRepository
+        .FindByCondition(x => x.Division.Equals(division))).Any();
 
     public async Task<bool> UpdateWorkout(Workout entity)
         => await _workoutRepository.Update(entity);

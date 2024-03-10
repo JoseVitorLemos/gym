@@ -5,11 +5,13 @@ namespace Gym.Domain.Entities;
 
 public sealed class Professional : BaseEntity
 {
-    public string Cref { get; set; } 
+    public string Cref { get; set; }
     public Guid IndividualEntityId { get; private set; }
     public IndividualEntity IndividualEntity { get; set; }
 
     public ICollection<Workout> Workout { get; set; }
+
+    public Professional() { }
 
     public Professional(string cref, Guid individualEntityId)
     {

@@ -23,7 +23,11 @@ public class AutoMapperProfile : Profile
         => CreateMap<Workout, WorkoutDTO>().ReverseMap();
 
     private void Professional()
-        => CreateMap<Professional, ProfessionalDTO>().ReverseMap();
+    {
+        CreateMap<Professional, ProfessionalDTO>()
+            .ForMember(dest => dest.IndividualEntity, opt => opt.MapFrom(x => x.IndividualEntity))
+            .ReverseMap();
+    }
 
     private void Exercise()
         => CreateMap<Exercise, ExerciseDTO>().ReverseMap();

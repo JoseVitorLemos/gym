@@ -28,7 +28,7 @@ public class LoginController : BaseController
     public async Task<IActionResult> ResetPassword([FromBody] LoginResetPasswordDTO model)
         => ApiResponse(await _loginServicer.ResetPassword(model));
 
-    [Authorize(Roles = "EmailConfirmation")]
+    [Authorize(Policy = "EmailConfirmation")]
     [HttpPost("ResendEmailConfirmation")]
     public async Task<IActionResult> ResendEmailConfirmation(string email)
     {
@@ -38,7 +38,7 @@ public class LoginController : BaseController
         return ApiResponse(await _loginServicer.ResendEmailConfirmation(email));
     }
 
-    [Authorize(Roles = "EmailConfirmation")]
+    [Authorize(Policy = "EmailConfirmation")]
     [HttpPost("ConfirmEmail")]
     public async Task<IActionResult> ConfirmEmail(string codeConfirmation)
         => ApiResponse(await _loginServicer.ConfirmEmail(ClaimsTypes.Email, codeConfirmation));
