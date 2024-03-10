@@ -9,7 +9,7 @@ public class GuidAnnotations : ValidationAttribute
     {
         var guid = new Guid(value?.ToString());
 
-        if (GuidValidations.IsValid(guid))
+        if (GuidValidations.IsValidGuid(guid))
             return ValidationResult.Success;
 
         return new ValidationResult("Invalid birthDate.");

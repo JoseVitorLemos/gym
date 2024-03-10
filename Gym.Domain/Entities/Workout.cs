@@ -27,7 +27,7 @@ public sealed class Workout : BaseEntity
     private void Validations(WorkoutDivision division, Guid individualEntityId, Guid personalId)
     {
         GlobalException.When(!EnumValidations.IsValidEnum<WorkoutDivision>(division), "Workout division is required.");
-        GlobalException.When(!GuidValidations.IsValid(individualEntityId), "IndividualEntityId is required.");
-        GlobalException.When(!GuidValidations.IsValid(personalId), "PersonalId is required.");
+        GlobalException.When(!GuidValidations.IsValidGuid(individualEntityId), "IndividualEntityId is required.");
+        GlobalException.When(!GuidValidations.IsValidGuid(personalId), "PersonalId is required.");
     }
 }

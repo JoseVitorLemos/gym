@@ -28,8 +28,8 @@ public sealed class Exercise : BaseEntity
     {
         GlobalException.When(numberOfSeries < 1, "Number of series is required.");
         GlobalException.When(repetitions < 1, "Repetitions of series is required.");
-        GlobalException.When(!GuidValidations.IsValid(imageExerciseId), "imageExerciseId is required.");
-        GlobalException.When(!GuidValidations.IsValid(workoutId), "WorkoutId is required.");
+        GlobalException.When(!GuidValidations.IsValidGuid(imageExerciseId), "imageExerciseId is required.");
+        GlobalException.When(!GuidValidations.IsValidGuid(workoutId), "WorkoutId is required.");
         GlobalException.When(Convert.ToInt32(restTime) < 1, "RestTime is required.");
     }
 }

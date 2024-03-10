@@ -14,7 +14,6 @@ public class AutoMapperProfile : Profile
         Exercise();
         ImageExercise();
         Login();
-        User();
     }
 
     private void IndividualEntity()
@@ -46,11 +45,4 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.Email, opt => opt.MapFrom(x => x.Email.ToLower()))
             .ReverseMap();
     }
-
-    private void User()
-        => CreateMap<User, UserDTO>()
-            .ForMember(dest => dest.LoginId, opt => opt.MapFrom(src => src.Login.Id))
-            .ForMember(dest => dest.IndividualEntityId, opt => opt.MapFrom(src => src.IndividualEntity.Id))
-            .ForMember(dest => dest.IndividualEntity, opt => opt.MapFrom(src => src.IndividualEntity))
-            .ReverseMap();
 }

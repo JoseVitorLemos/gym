@@ -11,7 +11,6 @@ public sealed class Login : BaseEntity
     public string Password { get; private set; }
     public Roles Role { get; private set; }
 
-    public ICollection<User> User { get; set; }
     public ICollection<LoginConfirmation> LoginConfirmation { get; set; }
 
     public Login() { }

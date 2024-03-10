@@ -27,7 +27,7 @@ public sealed class LoginConfirmation : BaseEntity
 
     private void Validations(Guid loginId, string code)
     {
-        GlobalException.When(!loginId.IsValid(), "Invalid LoginId provided");
+        GlobalException.When(!loginId.IsValidGuid(), "Invalid LoginId provided");
         GlobalException.When(code.Length != 6, "Invalid Code length provided");
     }
 }
