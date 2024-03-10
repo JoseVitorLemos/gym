@@ -6,8 +6,6 @@ using Gym.Helpers.Exceptions;
 using Gym.Helpers.HashPassword;
 using Gym.Infrastructure.Smtp;
 using Gym.Business.Utils;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using Microsoft.EntityFrameworkCore;
 using Gym.Helpers.Utils;
 
 namespace Gym.Business.LoginBusiness;

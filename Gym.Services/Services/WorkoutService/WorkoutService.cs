@@ -22,8 +22,8 @@ public class WorkoutService : IWorkoutService
     public async Task<WorkoutDTO> GetWorkout(Guid id)
         => _mapper.Map<WorkoutDTO>(await _workoutBusiness.GetWorkout(id));
 
-    public async Task<bool> InsertWorkout(WorkoutDTO entity)
-        => await _workoutBusiness.InsertWorkout(_mapper.Map<Workout>(entity));
+    public async Task<bool> InsertWorkout(WorkoutDTO entity, Guid loginId)
+        => await _workoutBusiness.InsertWorkout(_mapper.Map<Workout>(entity), loginId);
 
     public async Task<bool> UpdateWorkout(WorkoutDTO entity)
         => await _workoutBusiness.UpdateWorkout(_mapper.Map<Workout>(entity));

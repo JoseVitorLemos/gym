@@ -14,5 +14,9 @@ public class IndividualEntityDbContext : IEntityTypeConfiguration<IndividualEnti
         builder.HasIndex(x => x.Cpf).IsUnique();
         builder.Property(x => x.Cpf).HasMaxLength(11).IsRequired();
         builder.Property(x => x.Gender).HasMaxLength(2).IsRequired();
+
+        builder.HasOne(x => x.Login)
+               .WithMany(x => x.IndividualEntity)
+               .HasForeignKey(fx => fx.LoginId);
     }
 }

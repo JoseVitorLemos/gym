@@ -1,5 +1,7 @@
 ﻿using Gym.Domain.Entities;
 using Gym.Domain.Interfaces;
+using Gym.Helpers.Enums;
+using Gym.Helpers.Exceptions;
 
 namespace Gym.Business.IndividualEntityBusiness;
 
@@ -19,21 +21,14 @@ public class IndividualEntityBusiness : IIndividualEntityBusiness
 
     public async Task InsertIndividualEntity(IndividualEntity entity)
     {
-        try
-        {
-            var cpfExists = await _individualEntityRepository.FindByCondition(x => x.Cpf == entity.Cpf);
+        var cpfExists = await _individualEntityRepository
+            .FindByCondition(x => x.Cpf == entity.Cpf);
 
-            if (cpfExists.Any())
-                return;
+        if (cpfExists.Any())
+            throw new GlobalException(HttpStatusCodes.BadRequest,
+                    "Cpf already registered");
 
-            await _individualEntityRepository.Insert(entity);
-        }
-        catch
-        {
-        }
-        finally
-        {
-        }
+        await _individualEntityRepository.Insert(entity);
     }
 
     public async Task<IQueryable<IndividualEntity>> FindIndividualEntityByName(string name, int page, int pageSize)

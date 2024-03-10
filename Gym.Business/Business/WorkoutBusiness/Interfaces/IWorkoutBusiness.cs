@@ -6,7 +6,7 @@ public interface IWorkoutBusiness
 {
     Task<List<Workout>> ListWorkout();
     Task<Workout> GetWorkout(Guid id);
-    Task<bool> InsertWorkout(Workout entity);
+    Task<bool> InsertWorkout(Workout entity, Guid loginId);
     Task<bool> UpdateWorkout(Workout entity);
     Task<bool> EnableOrDisableWorkout(Guid id, bool status);
 }

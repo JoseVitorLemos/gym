@@ -8,7 +8,7 @@ public enum Roles
     Admin,
     [Description("Waiting email of confirmation")]
     EmailConfirmation,
-    [Description("User authenticated")]
+    [Description("Email confirmed")]
     Authenticated,
     [Description("Personal trainer")]
     Personal,

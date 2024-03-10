@@ -24,7 +24,7 @@ public class WorkoutController : BaseController
 
     [HttpPost("InsertWorkout")]
     public async Task<IActionResult> InsertWorkout([FromBody] WorkoutDTO model)
-        => ApiResponse(await _workoutService.InsertWorkout(model));
+        => ApiResponse(await _workoutService.InsertWorkout(model, ClaimsTypes.Id));
 
     [HttpPut("UpdateWorkout")]
     public async Task<IActionResult> UpdateWorkout([FromBody] WorkoutDTO model)
