@@ -29,24 +29,38 @@ public static class DependencyInjectionJWT
         });
 
         var allRoles = Enum.GetNames(typeof(Roles)).ToList();
-        var allValidRoles = allRoles.Where(x => !x.Contains(Roles.EmailConfirmation.ToString())).ToList();
-
-        var filterPersonal = new string[] { Roles.FitnessClient.ToString(), Roles.EmailConfirmation.ToString() };
-        var personal = allRoles.Where(x => !filterPersonal.Contains(x));
 
         services.AddAuthorization(options =>
         {
             options.AddPolicy("AllUsers", policy => policy.RequireRole(allRoles));
         });
 
+        var allValidRoles = allRoles.Where(x => !x.Contains(Roles.EmailConfirmation.ToString())).ToList();
         services.AddAuthorization(options =>
         {
             options.AddPolicy("AllValidUsers", policy => policy.RequireRole(allValidRoles));
         });
 
+
+        var filterPersonal = new string[] { Roles.FitnessClient.ToString(), Roles.EmailConfirmation.ToString() };
+        var personal = allRoles.Where(x => !filterPersonal.Contains(x));
         services.AddAuthorization(options =>
         {
             options.AddPolicy("Personal", policy => policy.RequireRole(personal));
+        });
+
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("EmailConfirmation", 
+                    policy => policy.RequireRole(nameof(Roles.Admin),
+                                                 nameof(Roles.EmailConfirmation)));
+        });
+
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("Authenticated", 
+                    policy => policy.RequireRole(nameof(Roles.Admin),
+                                                 nameof(Roles.Authenticated)));
         });
 
         return services;
