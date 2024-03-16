@@ -229,7 +229,8 @@ namespace Gym.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IndividualEntityId");
+                    b.HasIndex("IndividualEntityId")
+                        .IsUnique();
 
                     b.ToTable("PROFESSIONALS", (string)null);
                 });

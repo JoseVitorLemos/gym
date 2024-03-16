@@ -10,6 +10,7 @@ public class ProfessionalDbContext : IEntityTypeConfiguration<Professional>
     {
         builder.ToTable("PROFESSIONALS");
         builder.HasKey(x => x.Id);
+        builder.HasIndex(x => x.IndividualEntityId).IsUnique();
 
         builder.HasOne(x => x.IndividualEntity)
                .WithMany(x => x.Professional)

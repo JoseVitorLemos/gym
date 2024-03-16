@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gym.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240309160517_LoginConfirmation_ConfirmedAt")]
-    partial class LoginConfirmation_ConfirmedAt
+    [Migration("20240316025749_first_database")]
+    partial class first_database
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -125,6 +125,9 @@ namespace Gym.Data.Migrations
                         .HasMaxLength(2)
                         .HasColumnType("int");
 
+                    b.Property<Guid>("LoginId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -137,6 +140,8 @@ namespace Gym.Data.Migrations
 
                     b.HasIndex("Cpf")
                         .IsUnique();
+
+                    b.HasIndex("LoginId");
 
                     b.ToTable("INDIVIDUAL_ENTITIES", (string)null);
                 });
@@ -227,36 +232,10 @@ namespace Gym.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IndividualEntityId");
+                    b.HasIndex("IndividualEntityId")
+                        .IsUnique();
 
                     b.ToTable("PROFESSIONALS", (string)null);
-                });
-
-            modelBuilder.Entity("Gym.Domain.Entities.User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("IndividualEntityId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("LoginId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IndividualEntityId");
-
-                    b.HasIndex("LoginId");
-
-                    b.ToTable("USERS", (string)null);
                 });
 
             modelBuilder.Entity("Gym.Domain.Entities.Workout", b =>
@@ -313,6 +292,17 @@ namespace Gym.Data.Migrations
                     b.Navigation("Workout");
                 });
 
+            modelBuilder.Entity("Gym.Domain.Entities.IndividualEntity", b =>
+                {
+                    b.HasOne("Gym.Domain.Entities.Login", "Login")
+                        .WithMany("IndividualEntity")
+                        .HasForeignKey("LoginId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Login");
+                });
+
             modelBuilder.Entity("Gym.Domain.Entities.LoginConfirmation", b =>
                 {
                     b.HasOne("Gym.Domain.Entities.Login", "Login")
@@ -333,25 +323,6 @@ namespace Gym.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("IndividualEntity");
-                });
-
-            modelBuilder.Entity("Gym.Domain.Entities.User", b =>
-                {
-                    b.HasOne("Gym.Domain.Entities.IndividualEntity", "IndividualEntity")
-                        .WithMany("User")
-                        .HasForeignKey("IndividualEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Gym.Domain.Entities.Login", "Login")
-                        .WithMany("User")
-                        .HasForeignKey("LoginId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("IndividualEntity");
-
-                    b.Navigation("Login");
                 });
 
             modelBuilder.Entity("Gym.Domain.Entities.Workout", b =>
@@ -388,16 +359,14 @@ namespace Gym.Data.Migrations
                 {
                     b.Navigation("Professional");
 
-                    b.Navigation("User");
-
                     b.Navigation("Workout");
                 });
 
             modelBuilder.Entity("Gym.Domain.Entities.Login", b =>
                 {
-                    b.Navigation("LoginConfirmation");
+                    b.Navigation("IndividualEntity");
 
-                    b.Navigation("User");
+                    b.Navigation("LoginConfirmation");
                 });
 
             modelBuilder.Entity("Gym.Domain.Entities.Professional", b =>

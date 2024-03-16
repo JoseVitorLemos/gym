@@ -30,7 +30,7 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         }
         catch (Exception e)
         {
-            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {_dbSet.GetType().Name}", e.InnerException);
+            throw new Exception($"Error on {_dbSet.GetType().Name}", e);
         }
     }
 
@@ -44,7 +44,7 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         }
         catch (Exception e)
         {
-            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {_dbSet.GetType().Name}", e.InnerException);
+            throw new Exception($"Error on {_dbSet.GetType().Name}", e);
         }
     }
 
@@ -90,7 +90,7 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         }
         catch (Exception e)
         {
-            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {_dbSet.GetType().Name}", e.InnerException);
+            throw new Exception($"Error on {_dbSet.GetType().Name}", e);
         }
     }
 
@@ -104,7 +104,7 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         }
         catch (Exception e)
         {
-            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {_dbSet.GetType().Name}", e.InnerException);
+            throw new Exception($"Error on {_dbSet.GetType().Name}", e);
         }
     }
 
@@ -119,7 +119,7 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         }
         catch (Exception e)
         {
-            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {_dbSet.GetType().Name}", e.InnerException);
+            throw new Exception($"Error on {_dbSet.GetType().Name}", e);
         }
     }
 
@@ -148,7 +148,7 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         }
         catch (Exception e)
         {
-            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {_dbSet.GetType().Name}", e.InnerException);
+            throw new Exception($"Error on {_dbSet.GetType().Name}", e);
         }
     }
 
@@ -161,7 +161,7 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         }
         catch (Exception e)
         {
-            throw new GlobalException(HttpStatusCodes.InternalServerError, $"Error on {_dbSet.GetType().Name}", e.InnerException);
+            throw new Exception($"Error on {_dbSet.GetType().Name}", e);
         }
     }
 

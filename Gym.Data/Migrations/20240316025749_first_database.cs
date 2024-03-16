@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Gym.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class StartDatabase : Migration
+    public partial class first_database : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,11 +20,28 @@ namespace Gym.Data.Migrations
                     ExerciseName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     FileByte = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     FileType = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false)
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_IMAGE_EXERCISES", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Logins",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
+                    Role = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Logins", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -36,45 +53,17 @@ namespace Gym.Data.Migrations
                     Cpf = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
                     BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Gender = table.Column<int>(type: "int", maxLength: 2, nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false)
+                    LoginId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_INDIVIDUAL_ENTITIES", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Logins",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
-                    Role = table.Column<int>(type: "int", nullable: false),
-                    EmailConfirmation = table.Column<bool>(type: "bit", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Logins", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PROFESSIONALS",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Cref = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IndividualEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PROFESSIONALS", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PROFESSIONALS_INDIVIDUAL_ENTITIES_IndividualEntityId",
-                        column: x => x.IndividualEntityId,
-                        principalTable: "INDIVIDUAL_ENTITIES",
+                        name: "FK_INDIVIDUAL_ENTITIES_Logins_LoginId",
+                        column: x => x.LoginId,
+                        principalTable: "Logins",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -85,8 +74,11 @@ namespace Gym.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     LoginId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Code = table.Column<int>(type: "int", maxLength: 6, nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false)
+                    Code = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
+                    EmailConfirmation = table.Column<bool>(type: "bit", nullable: false),
+                    ConfirmedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -100,27 +92,22 @@ namespace Gym.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "USERS",
+                name: "PROFESSIONALS",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LoginId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Cref = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IndividualEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false)
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_USERS", x => x.Id);
+                    table.PrimaryKey("PK_PROFESSIONALS", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_USERS_INDIVIDUAL_ENTITIES_IndividualEntityId",
+                        name: "FK_PROFESSIONALS_INDIVIDUAL_ENTITIES_IndividualEntityId",
                         column: x => x.IndividualEntityId,
                         principalTable: "INDIVIDUAL_ENTITIES",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_USERS_Logins_LoginId",
-                        column: x => x.LoginId,
-                        principalTable: "Logins",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -134,7 +121,8 @@ namespace Gym.Data.Migrations
                     PersonalId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IndividualEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ImageExerciseId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Status = table.Column<bool>(type: "bit", nullable: false)
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -167,7 +155,8 @@ namespace Gym.Data.Migrations
                     RestTime = table.Column<int>(type: "int", precision: 2, scale: 0, nullable: false),
                     ImageExerciseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     WorkoutId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false)
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -209,6 +198,11 @@ namespace Gym.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_INDIVIDUAL_ENTITIES_LoginId",
+                table: "INDIVIDUAL_ENTITIES",
+                column: "LoginId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_LoginConfirmations_LoginId",
                 table: "LoginConfirmations",
                 column: "LoginId");
@@ -222,17 +216,8 @@ namespace Gym.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_PROFESSIONALS_IndividualEntityId",
                 table: "PROFESSIONALS",
-                column: "IndividualEntityId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_USERS_IndividualEntityId",
-                table: "USERS",
-                column: "IndividualEntityId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_USERS_LoginId",
-                table: "USERS",
-                column: "LoginId");
+                column: "IndividualEntityId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_WORKOUTS_ImageExerciseId",
@@ -260,13 +245,7 @@ namespace Gym.Data.Migrations
                 name: "LoginConfirmations");
 
             migrationBuilder.DropTable(
-                name: "USERS");
-
-            migrationBuilder.DropTable(
                 name: "WORKOUTS");
-
-            migrationBuilder.DropTable(
-                name: "Logins");
 
             migrationBuilder.DropTable(
                 name: "IMAGE_EXERCISES");
@@ -276,6 +255,9 @@ namespace Gym.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "INDIVIDUAL_ENTITIES");
+
+            migrationBuilder.DropTable(
+                name: "Logins");
         }
     }
 }
