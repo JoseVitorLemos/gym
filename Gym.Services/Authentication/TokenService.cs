@@ -18,7 +18,7 @@ public class TokenService : ITokenService
     private string GetToken(Login login)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(CustomConfiguration.GetJWTSettings.Secret);
+        var key = Encoding.ASCII.GetBytes(CustomConfiguration.JWTSettings.Secret);
 
         var credentials = new SigningCredentials(new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature);
@@ -26,7 +26,7 @@ public class TokenService : ITokenService
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(ListClaims(login)),
-            Expires = DateTime.UtcNow.AddHours(CustomConfiguration.GetJWTSettings.ExpireHours),
+            Expires = DateTime.UtcNow.AddHours(CustomConfiguration.JWTSettings.ExpireHours),
             SigningCredentials = credentials
         };
 
@@ -60,7 +60,7 @@ public class TokenService : ITokenService
         var tokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(CustomConfiguration.GetJWTSettings.Secret)),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(CustomConfiguration.JWTSettings.Secret)),
             ValidateIssuer = false,
             ValidateAudience = false
         };

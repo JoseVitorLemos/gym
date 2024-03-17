@@ -28,11 +28,12 @@ public static class DependencyInjection
 
     private static void RegisterDbConstext(IServiceCollection services)
     {
-        switch (CustomConfiguration.GetAppSettings.Provider)
+        switch (CustomConfiguration.AppSettings.Provider)
         {
             case ProvidersTypes.SqlServer:
-                services.AddDbContext<DataContext>(options => options.UseSqlServer(CustomConfiguration.GetConnectionStrings.DefaultConnectionStrings,
-                                                   x => x.MigrationsAssembly(typeof(DataContext).Assembly.FullName)));
+                services.AddDbContext<DataContext>(options => 
+                        options.UseSqlServer(CustomConfiguration.ConnectionStrings.DefaultConnectionStrings, 
+                            x => x.MigrationsAssembly(typeof(DataContext).Assembly.FullName)));
                 break;
 
             default:

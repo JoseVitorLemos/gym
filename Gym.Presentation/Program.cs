@@ -1,4 +1,5 @@
 using Gym.DependencyInversion;
+using Gym.DependencyInversion.Caching;
 using Gym.DependencyInversion.Swagger;
 using Gym.Presentation.Middlewares;
 using Microsoft.AspNetCore.Http.Features;
@@ -11,6 +12,7 @@ services.AddEndpointsApiExplorer();
 services.AddInfraInjection();
 services.AddInfrastructureJWT();
 services.AddInfrastructureSwagger();
+services.AddInfrastructureRedis();
 services.AddControllers();
 services.AddLogging();
 

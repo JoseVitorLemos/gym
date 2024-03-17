@@ -24,7 +24,7 @@ public class SmtpNetMailAdapter : ISmtpSender
 
     public SmtpNetMailAdapter(IConfiguration configuration)
     {
-        SmtpSettingsType smtpSettings = CustomConfiguration.GetSmtpSettings;
+        SmtpSettingsType smtpSettings = CustomConfiguration.SmtpSettings;
 
         MailBody = string.Empty;
         Title = string.Empty;

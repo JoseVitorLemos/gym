@@ -12,16 +12,18 @@ public static class CustomConfiguration
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .Build();
 
-    public static AppSettingsType GetAppSettings
+    public static AppSettingsType AppSettings
         => _configuration.GetSection("AppSettings").Get<AppSettingsType>();
 
-    public static ConnectionStringsType GetConnectionStrings
+    public static ConnectionStringsType ConnectionStrings
         => _configuration.GetSection("ConnectionStrings").Get<ConnectionStringsType>();
 
-    public static SmtpSettingsType GetSmtpSettings
+    public static SmtpSettingsType SmtpSettings
         => _configuration.GetSection("Smtp").Get<SmtpSettingsType>();
 
-    public static JWTSettingsType GetJWTSettings
+    public static JWTSettingsType JWTSettings
         => _configuration.GetSection("JwtSettings").Get<JWTSettingsType>();
 
+    public static CachingRedisSettingsType RedisSettings
+        => _configuration.GetSection("CachingRedis").Get<CachingRedisSettingsType>();
 }

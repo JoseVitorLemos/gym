@@ -14,6 +14,11 @@
 		<ProjectReference Include="..\Gym.DependencyInversion\Gym.DependencyInversion.csproj" />
 		<ProjectReference Include="..\Gym.Services\Gym.Services.csproj" />
 		<ProjectReference Include="..\Gym.Helpers\Gym.Helpers.csproj" />
+		<ProjectReference Include="..\Gym.Infrastructure\Gym.Infrastructure.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
 
 </Project>

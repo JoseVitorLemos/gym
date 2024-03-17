@@ -22,7 +22,7 @@ public static class DependencyInjectionJWT
             x.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(CustomConfiguration.GetJWTSettings.Secret)),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(CustomConfiguration.JWTSettings.Secret)),
                 ValidateIssuer = false,
                 ValidateAudience = false
             };

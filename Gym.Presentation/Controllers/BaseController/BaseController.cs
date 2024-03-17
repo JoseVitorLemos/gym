@@ -14,32 +14,7 @@ public abstract class BaseController : ControllerBase
     public readonly ClaimsTypes ClaimsTypes;
 
     public BaseController(IHttpContextAccessor context)
-    {
-        Guid id = Guid.Empty;
-        string email = string.Empty;
-        Roles role = Roles.EmailConfirmation;
-
-        if (context?.HttpContext is not null)
-        {
-            foreach (Claim claim in context.HttpContext.User.Claims)
-                switch (claim.Type)
-                {
-                    case nameof(ClaimNames.Id):
-                        if (Guid.TryParse(claim.Value, out Guid parsedId))
-                            id = parsedId;
-                        break;
-                    case nameof(ClaimNames.Email):
-                        email = claim.Value;
-                        break;
-                    case ClaimTypes.Role:
-                        if (Enum.TryParse<Roles>(claim.Value, out Roles parsedRole))
-                            role = parsedRole;
-                        break;
-                }            
-        }
-
-        ClaimsTypes = new ClaimsTypes(id, email, role);
-    }
+        => ClaimsTypes = MapUserClaims(context);
 
     protected IActionResult ApiResponse<T>(T obj, string message = "")
     {
@@ -99,4 +74,32 @@ public abstract class BaseController : ControllerBase
 
     private bool IsList(Type obj)
         => obj.IsGenericType && obj.GetGenericTypeDefinition() == typeof(List<>);
+
+    private ClaimsTypes MapUserClaims(IHttpContextAccessor context)
+    {
+        Guid id = Guid.Empty;
+        string email = string.Empty;
+        Roles role = Roles.EmailConfirmation;
+
+        if (context.HttpContext is not null)
+        {
+            foreach (Claim claim in context.HttpContext.User.Claims)
+                switch (claim.Type)
+                {
+                    case nameof(ClaimNames.Id):
+                        if (Guid.TryParse(claim.Value, out Guid parsedId))
+                            id = parsedId;
+                        break;
+                    case nameof(ClaimNames.Email):
+                        email = claim.Value;
+                        break;
+                    case ClaimTypes.Role:
+                        if (Enum.TryParse<Roles>(claim.Value, out Roles parsedRole))
+                            role = parsedRole;
+                        break;
+                }
+        }
+
+        return new ClaimsTypes(id, email, role);
+    }
 }
