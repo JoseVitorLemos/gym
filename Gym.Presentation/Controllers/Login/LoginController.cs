@@ -11,7 +11,8 @@ public class LoginController : BaseController
 {
     private readonly ILoginService _loginServicer;
 
-    public LoginController(IHttpContextAccessor httpContext, ILoginService userService) : base(httpContext)
+    public LoginController(IHttpContextAccessor httpContext, 
+            ILoginService userService) : base(httpContext)
         => _loginServicer = userService;
 
     [AllowAnonymous]

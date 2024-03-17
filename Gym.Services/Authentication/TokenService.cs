@@ -8,47 +8,75 @@ using Gym.Services.Authentication.TokenService.Enum;
 using Gym.Services.DTO;
 using Microsoft.IdentityModel.Tokens;
 using Gym.Helpers.ConfigurationManager;
+using Gym.Domain.Entities;
+using Gym.Business.Utils;
 
 namespace Gym.Services.Authentication.TokenService;
 
 public class TokenService : ITokenService
 {
-    public string GetToken(string clainId, string clainEmail, string clainRole)
+    private string GetToken(Login login)
     {
-        var token = new JwtSecurityTokenHandler();
+        var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(CustomConfiguration.GetJWTSettings.Secret);
-
-        var subject = new ClaimsIdentity(new[]
-        {
-            new Claim(nameof(ClaimNames.Id), clainId),
-            new Claim(nameof(ClaimNames.Email), clainEmail),
-            new Claim(ClaimTypes.Role, clainRole)
-        });
 
         var credentials = new SigningCredentials(new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = subject,
+            Subject = new ClaimsIdentity(ListClaims(login)),
             Expires = DateTime.UtcNow.AddHours(CustomConfiguration.GetJWTSettings.ExpireHours),
             SigningCredentials = credentials
         };
 
-        return token.WriteToken(token.CreateToken(tokenDescriptor));
+        return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
     }
 
-    public LoginResponseDTO ResponseAuth(string id, string email, Roles role)
+    private IEnumerable<Claim> ListClaims(Login login)
+        => new[]
+        {
+            new Claim(nameof(ClaimNames.Id), login.Id.ToString()),
+            new Claim(nameof(ClaimNames.Email), login.Email),
+            new Claim(ClaimTypes.Role, login.Role.ToString())
+        };
+
+    public LoginResponseDTO ResponseAuth(Login login)
     {
-        Validations(email, role);
+        Validations(login.Email, login.Role);
 
         var response = new LoginResponseDTO
         {
-            Token = GetToken(Convert.ToString(id), email, role.ToString())
+            Token = GetToken(login)
         };
 
         return response;
     }
+
+    public static ClaimsPrincipal GetClaimsPrincipalFromExpiredToken(string token)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+        var tokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(CustomConfiguration.GetJWTSettings.Secret)),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+
+        var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
+
+        if (securityToken is not JwtSecurityToken jwtSecurityToken ||
+                !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
+                    StringComparison.InvariantCultureIgnoreCase))
+            throw new SecurityTokenException("Invlid token provided");
+
+        return principal;
+    }
+
+    private static string GenerateSecret()
+        => RandomHelpers.GenerateRandom(64, specialCharacters: true);
 
     private void Validations(string email, Roles role)
     {

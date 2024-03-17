@@ -11,7 +11,8 @@ public class WorkoutController : BaseController
 {
     private readonly IWorkoutService _workoutService;
 
-    public WorkoutController(IHttpContextAccessor httpContext, IWorkoutService workoutService) : base(httpContext)
+    public WorkoutController(IHttpContextAccessor httpContext, 
+            IWorkoutService workoutService) : base(httpContext)
         => _workoutService = workoutService;
 
     [HttpGet("ListWorkout")]

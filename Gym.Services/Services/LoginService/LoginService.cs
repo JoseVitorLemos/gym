@@ -22,17 +22,13 @@ public class LoginService : ILoginService
     }
 
     public async Task<LoginResponseDTO> Login(LoginDTO model)
-    {
-        var login = await _loginBusiness.Login(_mapper.Map<Login>(model));
-        return _authorization.ResponseAuth(login.Id.ToString(), login.Email, login.Role);
-    }
+        => _authorization
+            .ResponseAuth(await _loginBusiness.Login(_mapper.Map<Login>(model)));
 
     [AllowAnonymous]
     public async Task<LoginResponseDTO> Signup(LoginDTO model)
-    {
-        var login = await _loginBusiness.Signup(_mapper.Map<Login>(model));
-        return _authorization.ResponseAuth(login.Id.ToString(), login.Email, login.Role);
-    }
+        => _authorization
+            .ResponseAuth(await _loginBusiness.Signup(_mapper.Map<Login>(model)));
 
     public async Task<bool> ResetPassword(LoginResetPasswordDTO model)
         => await _loginBusiness.ResetPassword(_mapper.Map<Login>(model), model.NewPassword);

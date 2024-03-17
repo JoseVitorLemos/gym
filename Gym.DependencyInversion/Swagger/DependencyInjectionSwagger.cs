@@ -18,8 +18,7 @@ public static class DependencyInjectionSwagger
                 Scheme = "Bearer",
                 BearerFormat = "JWT",
                 In = ParameterLocation.Header,
-                Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] " +
-                "and then your token in the text input below.\r\n\r\nExample: \"Bearer YOUR_TOKEN_HERE\"",
+                Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Example: \"Bearer YOUR_TOKEN_HERE\"",
             });
 
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -37,6 +36,7 @@ public static class DependencyInjectionSwagger
                 }
             });
         });
+
         return services;
     }
 }

@@ -63,7 +63,8 @@ public class LoginBusiness : ILoginBusiness
             entity.SetStatus(false);
             await _loginRepository.Insert(entity);
 
-            string codeConfirmation = RandomHelpers.GenerateRandomNumbers(6);
+            string codeConfirmation = 
+                RandomHelpers.GenerateRandom(6, characters: false);
 
             var confirmation = new LoginConfirmation(entity.Id, codeConfirmation);
             await _emailConfirmation.Insert(confirmation);
@@ -129,7 +130,8 @@ public class LoginBusiness : ILoginBusiness
         {
             await _unitOfWork.BeginTransactionAsync();
 
-            string codeConfirmation = RandomHelpers.GenerateRandomNumbers(6);
+            string codeConfirmation = 
+                RandomHelpers.GenerateRandom(6, characters: false);
 
             var login = await FindByEmail(email);
 
