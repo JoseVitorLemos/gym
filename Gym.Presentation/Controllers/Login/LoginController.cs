@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 namespace Gym.Presentation.Controllers.User;
 
 [Route("api/[controller]")]
-[Authorize(Policy = "AllUsers")]
 public class LoginController : BaseController
 {
     private readonly ILoginService _loginServicer;
@@ -15,12 +14,10 @@ public class LoginController : BaseController
             ILoginService userService) : base(httpContext)
         => _loginServicer = userService;
 
-    [AllowAnonymous]
     [HttpPost("Login")]
     public async Task<IActionResult> Login([FromBody] LoginDTO model)
         => ApiResponse(await _loginServicer.Login(model), "Login with success !");
 
-    [AllowAnonymous]
     [HttpPost("Signup")]
     public async Task<IActionResult> Signup([FromBody] LoginDTO model)
         => ApiResponse(await _loginServicer.Signup(model), "Signup with success !");
@@ -44,7 +41,6 @@ public class LoginController : BaseController
     public async Task<IActionResult> ConfirmEmail(string codeConfirmation)
         => ApiResponse(await _loginServicer.ConfirmEmail(ClaimsTypes.Email, codeConfirmation));
 
-    [Authorize(Policy = "AllUsers")]
     [HttpGet("RefreshToken")]
     public async Task<IActionResult> RefreshToken(string refreshToken)
         => ApiResponse(await _loginServicer.RefreshToken(ClaimsTypes.Email, refreshToken));
