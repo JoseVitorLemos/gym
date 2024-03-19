@@ -90,6 +90,9 @@ public class TokenService : ITokenService
             RefreshToken = cacheRefreshToken
         };
 
+        await DeleteRefreshToken(login.Email);
+        await SaveRefreshToken(login.Email, response.RefreshToken);
+
         return response;
     }
 
@@ -99,7 +102,7 @@ public class TokenService : ITokenService
     private async Task SaveRefreshToken(string email, string refreshToken)
         => await _cache.SetAsync(email, refreshToken);
 
-    private async Task RevokeRefreshToken(string email)
+    private async Task DeleteRefreshToken(string email)
         => await _cache.DeleteAsync(email);
 
     private static TokenValidationParameters GetParameters()
