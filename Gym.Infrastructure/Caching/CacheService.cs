@@ -17,6 +17,15 @@ public class CacheService : ICacheService
         };
     }
 
+    public async Task<string> GetAsync(string key)
+        => await _cache.GetStringAsync(key);
+
+    public async Task SetAsync(string key, string value)
+        => await _cache.SetStringAsync(key, value, _options);
+
+    public async Task DeleteAsync(string key)
+        => await _cache.RemoveAsync(key);
+
     public void SetDistributedCacheTimes(TimeSpan absoluteExpiration,
             TimeSpan relativeExpire)
     {
@@ -26,10 +35,4 @@ public class CacheService : ICacheService
             SlidingExpiration = relativeExpire
         };
     }
-
-    public async Task<string> GetAsync(string key)
-        => await _cache.GetStringAsync(key);
-
-    public async Task SetAsync(string key, string value)
-        => await _cache.SetStringAsync(key, value, _options);
 }

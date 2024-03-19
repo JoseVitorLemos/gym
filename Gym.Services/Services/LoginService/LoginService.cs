@@ -22,13 +22,21 @@ public class LoginService : ILoginService
     }
 
     public async Task<LoginResponseDTO> Login(LoginDTO model)
-        => _authorization
-            .ResponseAuth(await _loginBusiness.Login(_mapper.Map<Login>(model)));
+    {
+        await _loginBusiness.Login(_mapper.Map<Login>(model));
+
+        return await _authorization
+               .ResponseAuth(_mapper.Map<LoginDTO>(model));
+    }
 
     [AllowAnonymous]
     public async Task<LoginResponseDTO> Signup(LoginDTO model)
-        => _authorization
-            .ResponseAuth(await _loginBusiness.Signup(_mapper.Map<Login>(model)));
+    {
+        var login = await _loginBusiness.Signup(_mapper.Map<Login>(model));
+
+        return await _authorization
+               .ResponseAuth(_mapper.Map<LoginDTO>(model));
+    }
 
     public async Task<bool> ResetPassword(LoginResetPasswordDTO model)
         => await _loginBusiness.ResetPassword(_mapper.Map<Login>(model), model.NewPassword);
@@ -39,4 +47,10 @@ public class LoginService : ILoginService
 
     public async Task<bool> ConfirmEmail(string email, string codeConfirmation)
         => await _loginBusiness.ConfirmEmail(email, codeConfirmation);
+
+    public async Task<LoginResponseDTO> RefreshToken(string email, string refreshToken)
+    {
+        var login = _mapper.Map<LoginDTO>(await _loginBusiness.FindByEmail(email));
+        return await _authorization.ResponseAuth(login, refreshToken);
+    }
 }

@@ -1,3 +1,4 @@
+using Gym.DependencyInversion.Swagger.Filter;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
@@ -10,6 +11,7 @@ public static class DependencyInjectionSwagger
         services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Gym API", Version = "v1" });
+            c.SchemaFilter<SwaggerIgnoreFilter>();
 
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
             {

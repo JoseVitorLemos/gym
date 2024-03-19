@@ -9,4 +9,6 @@ public interface ILoginBusiness
     Task<bool> ResetPassword(Login entity, string newPassword);
     Task<bool> ResendEmailConfirmation(string email);
     Task<bool> ConfirmEmail(string email, string codeConfirmation);
+    Task<Login> FindByEmail(string email);
+    Task<Login> GetLoginById(Guid id);
 }

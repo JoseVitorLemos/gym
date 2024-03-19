@@ -9,4 +9,5 @@ public interface ILoginService
     Task<bool> ResetPassword(LoginResetPasswordDTO model);
     Task<bool> ResendEmailConfirmation(string email);
     Task<bool> ConfirmEmail(string email, string codeConfirmation);
+    Task<LoginResponseDTO> RefreshToken(string email, string refreshToken);
 }

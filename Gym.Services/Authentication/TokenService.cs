@@ -1,39 +1,53 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Gym.Business.Utils;
 using Gym.Domain.Enums;
+using Gym.Helpers.ConfigurationManager;
+using Gym.Helpers.Enums;
 using Gym.Helpers.Exceptions;
 using Gym.Helpers.Validations;
+using Gym.Infrastructure.Caching;
 using Gym.Services.Authentication.TokenService.Enum;
 using Gym.Services.DTO;
 using Microsoft.IdentityModel.Tokens;
-using Gym.Helpers.ConfigurationManager;
-using Gym.Domain.Entities;
-using Gym.Business.Utils;
+using Newtonsoft.Json;
 
 namespace Gym.Services.Authentication.TokenService;
 
 public class TokenService : ITokenService
 {
-    private string GetToken(Login login)
+    private readonly ICacheService _cache;
+
+    public TokenService(ICacheService cache)
+    {
+        _cache = cache;
+        _cache.SetDistributedCacheTimes(TimeSpan.FromDays(30),
+                TimeSpan.FromDays(30));
+    }
+
+    private string CreateToken(LoginDTO login)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(CustomConfiguration.JWTSettings.Secret);
-
-        var credentials = new SigningCredentials(new SymmetricSecurityKey(key),
-                SecurityAlgorithms.HmacSha256Signature);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(ListClaims(login)),
             Expires = DateTime.UtcNow.AddHours(CustomConfiguration.JWTSettings.ExpireHours),
-            SigningCredentials = credentials
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
+                SecurityAlgorithms.HmacSha256Signature)
         };
 
-        return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        return tokenHandler.WriteToken(token);
     }
 
-    private IEnumerable<Claim> ListClaims(Login login)
+
+    private static string CreateRefreshToken()
+        => RandomHelpers.GenerateRandom(64);
+
+    private IEnumerable<Claim> ListClaims(LoginDTO login)
         => new[]
         {
             new Claim(nameof(ClaimNames.Id), login.Id.ToString()),
@@ -41,42 +55,63 @@ public class TokenService : ITokenService
             new Claim(ClaimTypes.Role, login.Role.ToString())
         };
 
-    public LoginResponseDTO ResponseAuth(Login login)
+    public async Task<LoginResponseDTO> ResponseAuth(LoginDTO login)
     {
         Validations(login.Email, login.Role);
 
         var response = new LoginResponseDTO
         {
-            Token = GetToken(login)
+            Token = CreateToken(login),
+            RefreshToken = CreateRefreshToken()
+        };
+
+        await SaveRefreshToken(login.Email,
+                response.RefreshToken);
+
+        return response;
+    }
+
+    public async Task<LoginResponseDTO> ResponseAuth(LoginDTO login,
+            string refreshToken)
+    {
+        var cacheRefreshToken = await GetToken(login.Email);
+
+        if (string.IsNullOrEmpty(cacheRefreshToken))
+            throw new GlobalException(HttpStatusCodes.BadRequest,
+                    "Refresh token are expired");
+
+        if (cacheRefreshToken != refreshToken)
+            throw new GlobalException(HttpStatusCodes.BadRequest,
+                            "Refresh token is invalid");
+
+        var response = new LoginResponseDTO
+        {
+            Token = CreateToken(login),
+            RefreshToken = cacheRefreshToken
         };
 
         return response;
     }
 
-    public static ClaimsPrincipal GetClaimsPrincipalFromExpiredToken(string token)
-    {
-        var tokenHandler = new JwtSecurityTokenHandler();
+    private async Task<string> GetToken(string email)
+        => await _cache.GetAsync(email);
 
-        var tokenValidationParameters = new TokenValidationParameters
+    private async Task SaveRefreshToken(string email, string refreshToken)
+        => await _cache.SetAsync(email, refreshToken);
+
+    private async Task RevokeRefreshToken(string email)
+        => await _cache.DeleteAsync(email);
+
+    private static TokenValidationParameters GetParameters()
+        => new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(CustomConfiguration.JWTSettings.Secret)),
+            IssuerSigningKey =
+                new SymmetricSecurityKey(Encoding.ASCII
+                        .GetBytes(CustomConfiguration.JWTSettings.Secret)),
             ValidateIssuer = false,
             ValidateAudience = false
         };
-
-        var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
-
-        if (securityToken is not JwtSecurityToken jwtSecurityToken ||
-                !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
-                    StringComparison.InvariantCultureIgnoreCase))
-            throw new SecurityTokenException("Invlid token provided");
-
-        return principal;
-    }
-
-    private static string GenerateSecret()
-        => RandomHelpers.GenerateRandom(64, specialCharacters: true);
 
     private void Validations(string email, Roles role)
     {

@@ -63,7 +63,7 @@ public class LoginBusiness : ILoginBusiness
             entity.SetStatus(false);
             await _loginRepository.Insert(entity);
 
-            string codeConfirmation = 
+            string codeConfirmation =
                 RandomHelpers.GenerateRandom(6, characters: false);
 
             var confirmation = new LoginConfirmation(entity.Id, codeConfirmation);
@@ -100,7 +100,7 @@ public class LoginBusiness : ILoginBusiness
         return await _loginRepository.Update(login);
     }
 
-    private async Task<Login> FindByEmail(string email)
+    public async Task<Login> FindByEmail(string email)
     {
         var login = await _loginRepository
             .FindByCondition(x => x.Email == email);
@@ -110,6 +110,9 @@ public class LoginBusiness : ILoginBusiness
 
         return login.First();
     }
+
+    public async Task<Login> GetLoginById(Guid id)
+        => await _loginRepository.GetById(id);
 
     public async Task<bool> ResendEmailConfirmation(string email)
     {
@@ -130,7 +133,7 @@ public class LoginBusiness : ILoginBusiness
         {
             await _unitOfWork.BeginTransactionAsync();
 
-            string codeConfirmation = 
+            string codeConfirmation =
                 RandomHelpers.GenerateRandom(6, characters: false);
 
             var login = await FindByEmail(email);
@@ -159,7 +162,7 @@ public class LoginBusiness : ILoginBusiness
     }
 
     public async Task<bool> ConfirmEmail(string email, string codeConfirmation)
-    {      
+    {
         await ValidateEmailConfirmed(email);
 
         DateTime nowLassTwoHours = DateTime.UtcNow.AddHours(-2);
@@ -206,7 +209,7 @@ public class LoginBusiness : ILoginBusiness
                              x.EmailConfirmation);
 
         if (emailConfirmed.Any())
-                throw new GlobalException(HttpStatusCodes.BadRequest,
-                    "Email already confirmed");
+            throw new GlobalException(HttpStatusCodes.BadRequest,
+                "Email already confirmed");
     }
 }

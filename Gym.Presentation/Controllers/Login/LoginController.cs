@@ -11,7 +11,7 @@ public class LoginController : BaseController
 {
     private readonly ILoginService _loginServicer;
 
-    public LoginController(IHttpContextAccessor httpContext, 
+    public LoginController(IHttpContextAccessor httpContext,
             ILoginService userService) : base(httpContext)
         => _loginServicer = userService;
 
@@ -43,4 +43,9 @@ public class LoginController : BaseController
     [HttpPost("ConfirmEmail")]
     public async Task<IActionResult> ConfirmEmail(string codeConfirmation)
         => ApiResponse(await _loginServicer.ConfirmEmail(ClaimsTypes.Email, codeConfirmation));
+
+    [Authorize(Policy = "AllUsers")]
+    [HttpGet("RefreshToken")]
+    public async Task<IActionResult> RefreshToken(string refreshToken)
+        => ApiResponse(await _loginServicer.RefreshToken(ClaimsTypes.Email, refreshToken));
 }
