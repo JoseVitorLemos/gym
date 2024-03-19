@@ -9,7 +9,6 @@ public static class CacheRedisInjection
     {
         services.AddStackExchangeRedisCache(x => 
                 {
-                    x.InstanceName = CustomConfiguration.RedisSettings.InstanceName;
                     x.Configuration = CustomConfiguration.RedisSettings.Host;
                 });
 
