@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Gym.DependencyInversion;
 using Gym.DependencyInversion.Caching;
 using Gym.DependencyInversion.Swagger;
@@ -13,7 +14,11 @@ services.AddInfraInjection();
 services.AddInfrastructureJWT();
 services.AddInfrastructureSwagger();
 services.AddInfrastructureRedis();
-services.AddControllers();
+services.AddControllers()
+    .AddJsonOptions(opt =>
+    {
+        opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 services.AddLogging();
 
 services.AddHttpContextAccessor();

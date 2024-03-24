@@ -33,7 +33,9 @@ public class WorkoutBusiness : IWorkoutBusiness
             throw new GlobalException(HttpStatusCodes.BadRequest,
                 "Only professionals can register training");
 
-        if (await ExistsDivisionWorkout(entity.Division))
+        Guid professionalId = professional.First().Id;
+
+        if (await ExistsDivisionWorkout(entity.Division, professionalId, entity.FitnessClientId))
             throw new GlobalException(HttpStatusCodes.BadRequest,
                 $"Workout division ({entity.Division}). Its already registered");
 
@@ -42,9 +44,12 @@ public class WorkoutBusiness : IWorkoutBusiness
         return await _workoutRepository.Insert(entity);
     }
 
-    private async Task<bool> ExistsDivisionWorkout(WorkoutDivision division)
+    private async Task<bool> ExistsDivisionWorkout(WorkoutDivision division, 
+        Guid professionalId, Guid fitnessCLientId)
         => (await _workoutRepository
-        .FindByCondition(x => x.Division.Equals(division))).Any();
+        .FindByCondition(x => x.Division.Equals(division) &&
+                         x.PersonalId.Equals(professionalId) &&
+                         x.FitnessClientId.Equals(fitnessCLientId))).Any();
 
     public async Task<bool> UpdateWorkout(Workout entity)
         => await _workoutRepository.Update(entity);
