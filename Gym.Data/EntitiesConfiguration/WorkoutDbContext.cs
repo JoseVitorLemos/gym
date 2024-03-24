@@ -13,7 +13,7 @@ public class WorkoutDbContext : IEntityTypeConfiguration<Workout>
 
         builder.HasOne(x => x.IndividualEntity)
                .WithMany(x => x.Workout)
-               .HasForeignKey(fx => fx.IndividualEntityId);
+               .HasForeignKey(fx => fx.FitnessClientId);
 
         builder.HasOne(x => x.Personal)
                .WithMany(x => x.Workout)

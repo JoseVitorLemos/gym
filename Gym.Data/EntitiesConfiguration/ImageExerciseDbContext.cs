@@ -8,7 +8,7 @@ public class ImageExerciseDbContext : IEntityTypeConfiguration<ImageExercise>
 {
     public void Configure(EntityTypeBuilder<ImageExercise> builder)
     {
-        builder.ToTable("IMAGE_EXERCISES");
+        builder.ToTable("ImageExercises");
         builder.HasKey(x => x.Id);
 
         builder.HasIndex(x => x.ExerciseName).IsUnique();

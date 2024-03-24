@@ -32,10 +32,11 @@ public sealed class Login : BaseEntity
         Password = BcryptAdapter.HashPassword(password);
     }
 
-    public void SetRole(Roles role)
+    public Login SetRole(Roles role)
     {
         GlobalException.When(!EnumValidations.IsValidEnum<Roles>(role), "Invalid Roles provided");
         Role = role;
+        return this;
     }
 
     public void SetStatus(bool status)

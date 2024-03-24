@@ -10,7 +10,7 @@ public sealed class Workout : BaseEntity
     public WorkoutDivision Division { get; private set; }
     public Guid PersonalId { get; private set; }
     public Professional Personal { get; set; }
-    public Guid IndividualEntityId { get; private set; }
+    public Guid FitnessClientId { get; private set; }
     public IndividualEntity IndividualEntity { get; set; }
 
     public ICollection<Exercise> Exercises { get; set; }
@@ -22,7 +22,7 @@ public sealed class Workout : BaseEntity
         Validations(division, individualEntityId, personalId);
 
         Division = division;
-        IndividualEntityId = individualEntityId;
+        FitnessClientId = individualEntityId;
         PersonalId = personalId;
     }
 

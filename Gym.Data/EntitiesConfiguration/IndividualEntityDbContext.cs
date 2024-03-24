@@ -8,7 +8,7 @@ public class IndividualEntityDbContext : IEntityTypeConfiguration<IndividualEnti
 {
     public void Configure(EntityTypeBuilder<IndividualEntity> builder)
     {
-        builder.ToTable("INDIVIDUAL_ENTITIES");
+        builder.ToTable("IndividualEntities");
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Name).HasMaxLength(100).IsRequired();
         builder.HasIndex(x => x.Cpf).IsUnique();

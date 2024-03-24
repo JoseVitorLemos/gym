@@ -4,6 +4,7 @@ using Gym.Data.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gym.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240324153508_RenameWorkou")]
+    partial class RenameWorkou
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,7 +101,7 @@ namespace Gym.Data.Migrations
                     b.HasIndex("ExerciseName")
                         .IsUnique();
 
-                    b.ToTable("ImageExercises", (string)null);
+                    b.ToTable("IMAGE_EXERCISES", (string)null);
                 });
 
             modelBuilder.Entity("Gym.Domain.Entities.IndividualEntity", b =>
@@ -140,7 +143,7 @@ namespace Gym.Data.Migrations
 
                     b.HasIndex("LoginId");
 
-                    b.ToTable("IndividualEntities", (string)null);
+                    b.ToTable("IndividualEntity");
                 });
 
             modelBuilder.Entity("Gym.Domain.Entities.Login", b =>
