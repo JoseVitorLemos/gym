@@ -7,7 +7,7 @@ public class WorkoutDTO
 {
     public Guid Id { get; set; }
     [EnumAnnotations<WorkoutDivision>(ErrorMessage = "WorkoutDivision is required")]
-    public WorkoutDivision WorkoutDivision { get; set; }
+    public WorkoutDivision Division { get; set; }
     [GuidAnnotations(ErrorMessage = "IndividualEntityId is required")]
     public Guid FitnessClientId { get; set; }
 }

@@ -17,22 +17,22 @@ public sealed class Workout : BaseEntity
 
     public Workout() { }
 
-    public Workout(WorkoutDivision division, Guid individualEntityId, Guid personalId)
+    public Workout(WorkoutDivision division, Guid fitnessClientId, Guid personalId)
     {
-        Validations(division, individualEntityId, personalId);
+        Validations(division, fitnessClientId, personalId);
 
         Division = division;
-        FitnessClientId = individualEntityId;
+        FitnessClientId = fitnessClientId;
         PersonalId = personalId;
     }
 
     public void SetPersonal(Guid personalId)
         => PersonalId = personalId;
 
-    private void Validations(WorkoutDivision division, Guid individualEntityId, Guid personalId)
+    private void Validations(WorkoutDivision division, Guid fitnessClientId, Guid personalId)
     {
         GlobalException.When(!EnumValidations.IsValidEnum<WorkoutDivision>(division), "Workout division is required.");
-        GlobalException.When(!GuidValidations.IsValidGuid(individualEntityId), "IndividualEntityId is required.");
+        GlobalException.When(!GuidValidations.IsValidGuid(fitnessClientId), "FitnessClientId is required.");
         GlobalException.When(!GuidValidations.IsValidGuid(personalId), "PersonalId is required.");
     }
 }
