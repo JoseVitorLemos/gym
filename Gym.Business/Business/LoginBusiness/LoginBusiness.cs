@@ -165,12 +165,19 @@ public class LoginBusiness : ILoginBusiness
     {
         await ValidateEmailConfirmed(email);
 
-        DateTime nowLassTwoHours = DateTime.UtcNow.AddHours(-2);
         var query = await _emailConfirmation
-            .FindByCondition(x => x.Code.Equals(codeConfirmation) &&
-                             x.CreatedAt >= nowLassTwoHours);
+            .FindByCondition(x => x.Login.Email.Equals(email));
 
-        var emailConfirmation = query.OrderByDescending(x => x.CreatedAt).FirstOrDefault() ??
+        var generatedCodeLastTwoHours = query.OrderByDescending(x => x.CreatedAt)
+            .Where(x => x.CreatedAt >= DateTime.UtcNow.AddHours(-2));
+
+        if (!generatedCodeLastTwoHours.Any())
+            throw new GlobalException(HttpStatusCodes.BadRequest, "Code expired");
+
+        var emailConfirmation = generatedCodeLastTwoHours
+            .Where(x => x.Code.Equals(codeConfirmation)).FirstOrDefault();
+
+        if (emailConfirmation is null)
             throw new GlobalException(HttpStatusCodes.BadRequest,
                     "Invalid Code confirmation provided");
 
@@ -211,5 +218,16 @@ public class LoginBusiness : ILoginBusiness
         if (emailConfirmed.Any())
             throw new GlobalException(HttpStatusCodes.BadRequest,
                 "Email already confirmed");
+    }
+
+    public async Task UpdateRoleFromId(Guid id, Roles role)
+    {
+        var login = await _loginRepository.GetById(id);
+
+        if (login is null)
+            throw new GlobalException(HttpStatusCodes.BadRequest,
+                "User login not found");
+
+        await _loginRepository.Update(login.SetRole(role));
     }
 }

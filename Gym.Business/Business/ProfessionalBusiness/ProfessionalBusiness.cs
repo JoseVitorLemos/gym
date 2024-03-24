@@ -35,7 +35,6 @@ public class ProfessionalBusiness : IProfessionalBusiness
             throw new GlobalException(HttpStatusCodes.BadRequest,
                     "Invalid login provided");
 
-
         var professional = await _profissionalRepository
             .FindByCondition(x => x.IndividualEntity.LoginId.Equals(loginId));
 

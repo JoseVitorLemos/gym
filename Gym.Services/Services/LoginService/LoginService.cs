@@ -23,19 +23,17 @@ public class LoginService : ILoginService
 
     public async Task<LoginResponseDTO> Login(LoginDTO model)
     {
-        await _loginBusiness.Login(_mapper.Map<Login>(model));
-
+        var login = await _loginBusiness.Login(_mapper.Map<Login>(model));
         return await _authorization
-               .ResponseAuth(_mapper.Map<LoginDTO>(model));
+               .ResponseAuth(_mapper.Map<LoginDTO>(login));
     }
 
     [AllowAnonymous]
     public async Task<LoginResponseDTO> Signup(LoginDTO model)
     {
         var login = await _loginBusiness.Signup(_mapper.Map<Login>(model));
-
         return await _authorization
-               .ResponseAuth(_mapper.Map<LoginDTO>(model));
+               .ResponseAuth(_mapper.Map<LoginDTO>(login));
     }
 
     public async Task<bool> ResetPassword(LoginResetPasswordDTO model)
@@ -45,8 +43,17 @@ public class LoginService : ILoginService
         => await _loginBusiness.ResendEmailConfirmation(email);
 
 
-    public async Task<bool> ConfirmEmail(string email, string codeConfirmation)
-        => await _loginBusiness.ConfirmEmail(email, codeConfirmation);
+    public async Task<LoginResponseDTO> ConfirmEmail(string email, string codeConfirmation)
+    {
+        bool confirmated = await _loginBusiness.ConfirmEmail(email, codeConfirmation);
+        if (confirmated)
+        {
+            var login = _mapper.Map<LoginDTO>(await _loginBusiness.FindByEmail(email));
+            return await _authorization.ResponseAuth(login);
+        }
+
+        return default;
+    }
 
     public async Task<LoginResponseDTO> RefreshToken(string email, string refreshToken)
     {

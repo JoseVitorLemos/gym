@@ -27,9 +27,9 @@ public class IndividualEntityController : BaseController
     public async Task<List<IndividualEntityDTO>> FindIndividualEntityByName(string name, int page, int pageSize)
         => await _individualEntityService.FindIndividualEntityByName(name, page, pageSize);
 
-    [HttpPost("InsertIndividualEntity")]
-    public async Task InsertIndividualEntity([FromBody] IndividualEntityDTO model)
-        => await _individualEntityService.InsertIndividualEntity(model);
+    [HttpPost("InsertFitnessClient")]
+    public async Task InsertFitnessClient([FromBody] IndividualEntityDTO model)
+        => await _individualEntityService.InsertFitnessClient(model);
 
     [HttpPut("UpdateIndividualEntity")]
     public async Task UpdateIndividualEntity([FromBody] IndividualEntityDTO model)

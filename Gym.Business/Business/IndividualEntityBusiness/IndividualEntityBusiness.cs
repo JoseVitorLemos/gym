@@ -1,4 +1,6 @@
-﻿using Gym.Domain.Entities;
+﻿using Gym.Business.LoginBusiness;
+using Gym.Domain.Entities;
+using Gym.Domain.Enums;
 using Gym.Domain.Interfaces;
 using Gym.Helpers.Enums;
 using Gym.Helpers.Exceptions;
@@ -8,18 +10,21 @@ namespace Gym.Business.IndividualEntityBusiness;
 public class IndividualEntityBusiness : IIndividualEntityBusiness
 {
     private readonly IRepository<IndividualEntity> _individualEntityRepository;
-    private readonly IUnitOfWork _unit;
+    private readonly ILoginBusiness _LoginBusiness;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public IndividualEntityBusiness(IRepository<IndividualEntity> individualEntityRepository, IUnitOfWork unit)
+    public IndividualEntityBusiness(IRepository<IndividualEntity> individualEntityRepository,
+            IUnitOfWork unitOfWork, ILoginBusiness LoginBusiness)
     {
         _individualEntityRepository = individualEntityRepository;
-        _unit = unit;
+        _unitOfWork = unitOfWork;
+        _LoginBusiness = LoginBusiness;
     }
 
     public async Task<IndividualEntity> GetIndividualEntity(Guid id)
         => await _individualEntityRepository.GetById(id);
 
-    public async Task InsertIndividualEntity(IndividualEntity entity)
+    public async Task InsertFitnessClient(IndividualEntity entity)
     {
         var cpfExists = await _individualEntityRepository
             .FindByCondition(x => x.Cpf == entity.Cpf);
@@ -28,7 +33,22 @@ public class IndividualEntityBusiness : IIndividualEntityBusiness
             throw new GlobalException(HttpStatusCodes.BadRequest,
                     "Cpf already registered");
 
-        await _individualEntityRepository.Insert(entity);
+        try
+        {
+            await _unitOfWork.BeginTransactionAsync();
+
+            await _LoginBusiness
+            .UpdateRoleFromId(entity.LoginId, Roles.FitnessClient);
+
+            await _individualEntityRepository.Insert(entity);
+
+            await _unitOfWork.CommitAsync();
+        }
+        catch (Exception e)
+        {
+            await _unitOfWork.RollbackAsync();
+            throw new GlobalException(HttpStatusCodes.InternalServerError, e.Message);
+        }
     }
 
     public async Task<IQueryable<IndividualEntity>> FindIndividualEntityByName(string name, int page, int pageSize)

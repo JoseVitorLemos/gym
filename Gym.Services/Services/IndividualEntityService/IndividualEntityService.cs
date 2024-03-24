@@ -25,8 +25,8 @@ public class IndividualEntityService : IIndividualEntityService
     public async Task<List<IndividualEntityDTO>> FindIndividualEntityByName(string name, int page, int pageSize) 
         => _mapper.Map<List<IndividualEntityDTO>>(await _individualEntityBusiness.FindIndividualEntityByName(name, page, pageSize));
 
-    public async Task InsertIndividualEntity(IndividualEntityDTO entity)
-        => await _individualEntityBusiness.InsertIndividualEntity(_mapper.Map<IndividualEntity>(entity));
+    public async Task InsertFitnessClient(IndividualEntityDTO entity)
+        => await _individualEntityBusiness.InsertFitnessClient(_mapper.Map<IndividualEntity>(entity));
 
     public async Task UpdateIndividualEntity(IndividualEntityDTO entity)
         => await _individualEntityBusiness.UpdateIndividualEntity(_mapper.Map<IndividualEntity>(entity));

@@ -1,4 +1,5 @@
 ﻿using Gym.Domain.Entities;
+using Gym.Domain.Enums;
 
 namespace Gym.Business.LoginBusiness;
 
@@ -11,4 +12,5 @@ public interface ILoginBusiness
     Task<bool> ConfirmEmail(string email, string codeConfirmation);
     Task<Login> FindByEmail(string email);
     Task<Login> GetLoginById(Guid id);
+    Task UpdateRoleFromId(Guid id, Roles role);
 }

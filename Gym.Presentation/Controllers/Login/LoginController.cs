@@ -43,5 +43,6 @@ public class LoginController : BaseController
 
     [HttpGet("RefreshToken")]
     public async Task<IActionResult> RefreshToken(string refreshToken)
-        => ApiResponse(await _loginServicer.RefreshToken(ClaimsTypes.Email, refreshToken));
+        => ApiResponse(await _loginServicer.RefreshToken(ClaimsTypes.Email, refreshToken),
+            "Generate token with success");
 }
