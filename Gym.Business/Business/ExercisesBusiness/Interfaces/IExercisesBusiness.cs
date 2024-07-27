@@ -4,9 +4,9 @@ namespace Gym.Business.ExercisesBusiness;
 
 public interface IExercisesBusiness
 {
-    Task<List<Exercise>> ListExercises();
-    Task<Exercise> GetExercises(Guid id);
-    Task<bool> InsertExercises(Exercise entity);
-    Task<bool> UpdateExercises(Exercise entity);
-    Task<bool> EnableOrDisableExercises(Guid id, bool status);
+    Task<List<Exercise>> GetAll();
+    Task<Exercise> Get(Guid id);
+    Task<bool> Post(Exercise entity);
+    Task<bool> Update(Exercise entity);
+    Task<bool> EnableOrDisable(Guid id, bool status);
 }

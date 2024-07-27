@@ -10,18 +10,18 @@ public class ExercisesBusiness : IExercisesBusiness
     public ExercisesBusiness(IRepository<Exercise> ExercisesRepository)
         => _ExercisesRepository = ExercisesRepository;
 
-    public async Task<List<Exercise>> ListExercises()
+    public async Task<List<Exercise>> GetAll()
         => await _ExercisesRepository.GetAll();
 
-    public async Task<Exercise> GetExercises(Guid id)
+    public async Task<Exercise> Get(Guid id)
         => await _ExercisesRepository.GetById(id);
 
-    public async Task<bool> InsertExercises(Exercise entity)
+    public async Task<bool> Post(Exercise entity)
         => await _ExercisesRepository.Insert(entity);
 
-    public async Task<bool> UpdateExercises(Exercise entity)
+    public async Task<bool> Update(Exercise entity)
         => await _ExercisesRepository.Update(entity);
 
-    public async Task<bool> EnableOrDisableExercises(Guid id, bool status)
+    public async Task<bool> EnableOrDisable(Guid id, bool status)
         => await _ExercisesRepository.EnableOrDisable(id, status);
 }

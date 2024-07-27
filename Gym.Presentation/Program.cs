@@ -1,16 +1,25 @@
 using System.Text.Json.Serialization;
-using Gym.DependencyInversion;
 using Gym.DependencyInversion.Caching;
 using Gym.DependencyInversion.Swagger;
 using Gym.Presentation.Middlewares;
 using Microsoft.AspNetCore.Http.Features;
+using Gym.DependencyInversion.Context;
+using Gym.DependencyInversion.DependencyInjection;
+using Gym.Data.Repositories;
+using Gym.Data.UnitOfWork;
+using Gym.Domain.Interfaces;
+using Gym.Services.AutoMapperProfile;
 
 var builder = WebApplication.CreateBuilder(args);
 
 IServiceCollection services = builder.Services;
 
+services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
+services.AddAutoMapper(typeof(AutoMapperProfile));
 services.AddEndpointsApiExplorer();
-services.AddInfraInjection();
+services.AddDataContext();
+services.AddDependecyInjection();
 services.AddInfrastructureJWT();
 services.AddInfrastructureSwagger();
 services.AddInfrastructureRedis();

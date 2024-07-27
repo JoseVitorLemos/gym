@@ -89,14 +89,16 @@ public abstract class BaseController : ControllerBase
                     case nameof(ClaimNames.Id):
                         if (Guid.TryParse(claim.Value, out Guid parsedId))
                             id = parsedId;
-                        break;
+                    break;
+
                     case nameof(ClaimNames.Email):
-                        email = claim.Value;
-                        break;
+                        email = claim.Value;    
+                    break;
+
                     case ClaimTypes.Role:
                         if (Enum.TryParse<Roles>(claim.Value, out Roles parsedRole))
                             role = parsedRole;
-                        break;
+                    break;
                 }
         }
 

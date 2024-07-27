@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace Gym.Presentation.Controllers.Exercises;
 
 [Route("api/[controller]")]
-[Authorize(Policy = "AllValidUsers")]
+//[Authorize(Policy = "AllValidUsers")]
 public class ExercisesController : BaseController
 {
     private readonly IExercisesService _workoutService;
@@ -15,23 +15,23 @@ public class ExercisesController : BaseController
             IExercisesService workoutService) : base(httpContext)
         => _workoutService = workoutService;
 
-    [HttpGet("ListExercises")]
-    public async Task<IActionResult> ListExercises()
-        => GetResponse(await _workoutService.ListExercises());
+    [HttpGet("GetAll")]
+    public async Task<IActionResult> GetAll()
+        => GetResponse(await _workoutService.GetAll());
 
-    [HttpGet("GetExercises")]
-    public async Task<IActionResult> GetExercises(Guid id)
-        => GetResponse(await _workoutService.GetExercises(id));
+    [HttpGet("Get{id}")]
+    public async Task<IActionResult> Get(Guid id)
+        => GetResponse(await _workoutService.Get(id));
 
-    [HttpPost("InsertExercises")]
-    public async Task<IActionResult> InsertExercises([FromBody] ExerciseDTO model)
-        => ApiResponse(await _workoutService.InsertExercises(model));
+    [HttpPost("Post")]
+    public async Task<IActionResult> Post([FromBody] ExerciseDTO model)
+        => ApiResponse(await _workoutService.Post(model));
 
-    [HttpPut("UpdateExercises")]
-    public async Task<IActionResult> UpdateExercises([FromBody] ExerciseDTO model)
-        => ApiResponse(await _workoutService.UpdateExercises(model));
+    [HttpPut("Update")]
+    public async Task<IActionResult> Update([FromBody] ExerciseDTO model)
+        => ApiResponse(await _workoutService.Update(model));
 
-    [HttpPatch("EnableOrDisableExercises")]
-    public async Task<IActionResult> EnableOrDisableExercises(Guid id, bool status)
-        => ApiResponse(await _workoutService.EnableOrDisableExercises(id, status));
+    [HttpPatch("EnableOrDisable{id}/{status}")]
+    public async Task<IActionResult> EnableOrDisable(Guid id, bool status)
+        => ApiResponse(await _workoutService.EnableOrDisable(id, status));
 }

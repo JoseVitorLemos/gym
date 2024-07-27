@@ -16,18 +16,18 @@ public class ExercisesService : IExercisesService
         _mapper = mapper;
     }
 
-    public async Task<List<ExerciseDTO>> ListExercises()
-        => _mapper.Map<List<ExerciseDTO>>(await _ExercisesBusiness.ListExercises());
+    public async Task<List<ExerciseDTO>> GetAll()
+        => _mapper.Map<List<ExerciseDTO>>(await _ExercisesBusiness.GetAll());
 
-    public async Task<ExerciseDTO> GetExercises(Guid id)
-        => _mapper.Map<ExerciseDTO>(await _ExercisesBusiness.GetExercises(id));
+    public async Task<ExerciseDTO> Get(Guid id)
+        => _mapper.Map<ExerciseDTO>(await _ExercisesBusiness.Get(id));
 
-    public async Task<bool> InsertExercises(ExerciseDTO entity)
-        => await _ExercisesBusiness.InsertExercises(_mapper.Map<Exercise>(entity));
+    public async Task<bool> Post(ExerciseDTO entity)
+        => await _ExercisesBusiness.Post(_mapper.Map<Exercise>(entity));
 
-    public async Task<bool> UpdateExercises(ExerciseDTO entity)
-        => await _ExercisesBusiness.UpdateExercises(_mapper.Map<Exercise>(entity));
+    public async Task<bool> Update(ExerciseDTO entity)
+        => await _ExercisesBusiness.Update(_mapper.Map<Exercise>(entity));
 
-    public async Task<bool> EnableOrDisableExercises(Guid id, bool status)
-        => await _ExercisesBusiness.EnableOrDisableExercises(id, status);
+    public async Task<bool> EnableOrDisable(Guid id, bool status)
+        => await _ExercisesBusiness.EnableOrDisable(id, status);
 }

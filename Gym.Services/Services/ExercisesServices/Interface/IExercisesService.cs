@@ -4,9 +4,9 @@ namespace Gym.Services.ExercisesService;
 
 public interface IExercisesService
 {
-    Task<List<ExerciseDTO>> ListExercises();
-    Task<ExerciseDTO> GetExercises(Guid id);
-    Task<bool> InsertExercises(ExerciseDTO model);
-    Task<bool> UpdateExercises(ExerciseDTO model);
-    Task<bool> EnableOrDisableExercises(Guid id, bool status);
+    Task<List<ExerciseDTO>> GetAll();
+    Task<ExerciseDTO> Get(Guid id);
+    Task<bool> Post(ExerciseDTO model);
+    Task<bool> Update(ExerciseDTO model);
+    Task<bool> EnableOrDisable(Guid id, bool status);
 }
